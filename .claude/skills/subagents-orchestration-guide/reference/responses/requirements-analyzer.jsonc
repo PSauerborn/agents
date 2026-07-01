@@ -1,0 +1,43 @@
+// Response schema for the `requirements-analyzer` subagent.
+// Source: .claude/agents/requirements-analyzer.md (Output Format section).
+//
+// The agent emits this as the entire content of its FINAL message: the message
+// begins with `{` and ends with `}`. Intermediate progress may be plain
+// text/markdown, but only the final JSON object is contractual.
+{
+  // the type of task being requested: feature, fix, refactor, performance, or
+  // security. determine using provided context and codebase.
+  "taskType": "feature|fix|refactor|performance|security",
+  "purpose": "Essential purpose of request (1-2 sentences)",
+  "scale": "small|medium|large", // refer to scale determination criteria (small: 1-2 files, medium: 3-5, large: 6+)
+  "confidence": "confirmed|provisional", // confidence in the scale determination based on clarity of requirements and codebase analysis
+  "affectedFiles": ["path/to/file1", "path/to/file2"], // list of files affected by the change
+  "fileCount": 3, // file count is the most important criteria for scale determination
+
+  // technical considerations, constraints, risks, and dependencies that may affect implementation
+  "technicalConsiderations": {
+    "constraints": ["list"],
+    "risks": ["list"],
+    "dependencies": ["list"]
+  },
+  // questions that affect the scope and scale of the work
+  "scopeDependencies": [
+    {
+      "question": "specific question that affects scale",
+      "impact": { "if_yes": "large", "if_no": "medium" }
+    }
+  ],
+  // general questions related to the work that require confirmation before proceeding
+  "questions": [
+    {
+      "category": "boundary|existing_code|dependencies",
+      "question": "specific question",
+      "options": ["A", "B", "C"]
+    }
+  ],
+  // meta information about the execution of the agent
+  "meta": {
+    "tokensUsed": 0, // total number of tokens used during execution
+    "executionTime": 0 // total execution time in seconds
+  }
+}

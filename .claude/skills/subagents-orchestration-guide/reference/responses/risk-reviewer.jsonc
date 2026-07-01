@@ -1,0 +1,26 @@
+// Response schema for the `risk-reviewer` subagent.
+// Source: .claude/agents/risk-reviewer.md (Output Format section).
+//
+// The agent emits this as the entire content of its FINAL message: the message
+// begins with `{` and ends with `}`. Intermediate progress may be plain
+// text/markdown, but only the final JSON object is contractual.
+{
+  "status": "completed",
+  "riskRemediationRequired": true, // true if any risk required remediation was identified; false otherwise
+  "riskRemediationCount": 0, // total number of risk required remediation identified
+  "riskRemediations": [ // list of risk required remediation identified
+    {
+      "riskId": "RISK-001", // ID of the risk from the risk plan requiring remediation, matching the regex RISK-[0-9]{3}
+      "filePath": "cmd/main.go", // path to the file where the risk was identified
+      "description": "Fernet key read from plaintext config instead of secrets manager", // description of the risk deviation found in the code change
+      "severity": "high", // severity of the risk requiring remediation: one of "low", "medium", "high", "critical"
+      "remediationAction": "Load the Fernet key from the secrets manager at startup and fail closed if unavailable" // concrete action required to mitigate the risk
+    }
+  ],
+  "remediationTaskPath": "docs/plans/tasks/{workPlanId}/TASK-RISK-REMEDIATION.md", // path to the generated remediation task if any violations were found; null if no violations were found
+  // meta information about the execution of the agent
+  "meta": {
+    "tokensUsed": 0, // total number of tokens used during execution
+    "executionTime": 0 // total execution time in seconds
+  }
+}

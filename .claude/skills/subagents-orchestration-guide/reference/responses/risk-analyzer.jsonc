@@ -1,0 +1,24 @@
+// Response schema for the `risk-analyzer` subagent.
+// Source: .claude/agents/risk-analyzer.md (Output Format section).
+//
+// The agent emits this as the entire content of its FINAL message: the message
+// begins with `{` and ends with `}`. Intermediate progress may be plain
+// text/markdown, but only the final JSON object is contractual.
+{
+  "workPlanId": "string", // Unique identifier for the work plan, matching the regex WP-[0-9]{3}
+  // The output fields returned by the agent must match this schema exactly.
+  "planOutputPath": "string", // Path to the generated risk plan document
+  "risksIdentified": [ // list of identified risks
+    {
+      "riskId": "string", // Unique identifier for the risk, matching the regex RISK-[0-9]{3}
+      "description": "string", // Description of the identified risk
+      "impact": "string", // Potential impact of the risk on the project
+      "mitigationStrategy": "string" // Mitigation strategy for the identified risk
+    }
+  ],
+  // meta information about the execution of the agent
+  "meta": {
+    "tokensUsed": 0, // total number of tokens used during execution
+    "executionTime": 0 // total execution time in seconds
+  }
+}
