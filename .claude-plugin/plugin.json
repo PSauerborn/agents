@@ -1,24 +1,11 @@
 {
-  "name": "agents",
-  "displayName": "Agents",
+  "name": "subagents-dev",
+  "displayName": "Subagents Dev",
   "version": "1.0.0",
   "description": "A reusable team of specialist subagents, skills, and orchestration procedures that turn a plain-language spec into implemented, quality-checked, risk-reviewed code.",
   "author": {
     "name": "Pascal Sauerborn",
     "email": "pascal.sauerborn@gmail.com",
     "url": "https://github.com/PSauerborn"
-  },
-  "homepage": "https://github.com/PSauerborn/agents",
-  "repository": "https://github.com/PSauerborn/agents",
-  "license": "Apache-2.0",
-  "keywords": [
-    "claude-code",
-    "agents",
-    "skills",
-    "orchestration",
-    "subagents",
-    "workflow"
-  ],
-  "agents": "./.claude/agents",
-  "skills": "./.claude/skills"
+  }
 }
