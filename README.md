@@ -6,20 +6,24 @@ A reusable set of [Claude Code](https://claude.com/claude-code) **agent definiti
 
 1. [Overall Approach](#1-overall-approach)
    1. [Design principles](#11-design-principles)
-2. [Quick Start](#2-quick-start)
-3. [Repository / Folder Structure](#3-repository--folder-structure)
-   1. [Folder structure produced by agents at runtime](#31-folder-structure-produced-by-agents-at-runtime)
-4. [The Subagents](#4-the-subagents)
-5. [How the Orchestrator Works](#5-how-the-orchestrator-works)
-6. [Scale Flows](#6-scale-flows)
-   1. [Small — Reduced Flow (PROC-001)](#61-small--reduced-flow-proc-001)
-   2. [Medium — Standard Flow (PROC-002)](#62-medium--standard-flow-proc-002)
-   3. [Large — Full Flow (PROC-003)](#63-large--full-flow-proc-003)
-   4. [After any flow — Usage Report](#64-after-any-flow--usage-report)
-7. [Usage](#7-usage)
-8. [Makefile](#8-makefile)
-9. [Pre-commit Hooks](#9-pre-commit-hooks)
-10. [License](#10-license)
+2. [Installation](#2-installation)
+   1. [Install as a plugin](#21-install-as-a-plugin)
+   2. [Manual install into `.claude/`](#22-manual-install-into-claude)
+3. [Commands](#3-commands)
+4. [Quick Start](#4-quick-start)
+5. [Repository / Folder Structure](#5-repository--folder-structure)
+   1. [Folder structure produced by agents at runtime](#51-folder-structure-produced-by-agents-at-runtime)
+6. [The Subagents](#6-the-subagents)
+7. [How the Orchestrator Works](#7-how-the-orchestrator-works)
+8. [Scale Flows](#8-scale-flows)
+   1. [Small — Reduced Flow (PROC-001)](#81-small--reduced-flow-proc-001)
+   2. [Medium — Standard Flow (PROC-002)](#82-medium--standard-flow-proc-002)
+   3. [Large — Full Flow (PROC-003)](#83-large--full-flow-proc-003)
+   4. [After any flow — Usage Report](#84-after-any-flow--usage-report)
+9. [Usage](#9-usage)
+10. [Makefile](#10-makefile)
+11. [Pre-commit Hooks](#11-pre-commit-hooks)
+12. [License](#12-license)
 
 ## 1. Overall Approach
 
@@ -70,7 +74,48 @@ flowchart TD
 - **Escalate, don't guess.** When a subagent can't determine how to proceed from repo state and artifacts, it reports as *blocked* rather than inventing an approach.
 - **Canonical artifact locations.** The `documentation-criteria` skill is the single source of truth for where every artifact is written — no agent invents paths.
 
-## 2. Quick Start
+## 2. Installation
+
+This repository is a self-contained [Claude Code plugin](https://code.claude.com/docs/en/plugins) named `subagents-dev` (see [`.claude-plugin/plugin.json`](.claude-plugin/plugin.json)). It bundles the specialist subagents under [`agents/`](agents/) and the skills under [`skills/`](skills/). There are two supported ways to install it.
+
+### 2.1 Install as a plugin
+
+Clone the repository and load it with the `--plugin-dir` flag, which points Claude Code at the directory containing `.claude-plugin/plugin.json`:
+
+```bash
+git clone https://github.com/PSauerborn/agents.git
+claude --plugin-dir ./agents
+```
+
+Claude Code registers the `subagents-dev` plugin and its skills become available as **namespaced** slash commands — e.g. `/subagents-dev:implement-spec`. See [Commands](#3-commands) for the full list.
+
+### 2.2 Manual install into `.claude/`
+
+Alternatively, copy the `agents/` and `skills/` directories straight into a Claude Code configuration directory — either a single project's `.claude/`, or your global `~/.claude/` to make them available everywhere:
+
+```bash
+# project-local (available in that repo only)
+cp -r agents skills /path/to/your-project/.claude/
+
+# or global (available in every project)
+cp -r agents skills ~/.claude/
+```
+
+Installed this way the skills are invoked **without** the plugin namespace — e.g. `/implement-spec`.
+
+## 3. Commands
+
+The plugin exposes three user-invocable slash commands. When installed as a plugin they are namespaced (`/subagents-dev:<name>`); when copied into `.claude/` they are invoked as `/<name>`.
+
+| Command | Arguments | What it does |
+| ------- | --------- | ------------ |
+| `implement-spec` | `<spec or feature request>` | The orchestrator entry point. Determines the task's scale, runs the matching flow ([PROC-001/002/003](#8-scale-flows)), and stops for your approval at every `[STOP]` checkpoint. It never edits code itself — it delegates to the subagents. |
+| `review-spec` | `<spec-path>` | Reviews a feature spec for clarity, conciseness, completeness, scope, and inconsistencies before you implement it. |
+| `agent-doc-sync` | *(none)* | Analyzes the available subagents and regenerates their documented inputs/outputs in the `subagents-orchestration-guide` skill. |
+
+The plugin also ships supporting **knowledge skills** — `coding-standards`, `documentation-criteria`, `plan-approvals`, and `subagents-orchestration-guide` — which Claude loads automatically while a command runs; you do not invoke these directly.
+
+## 4. Quick Start
 
 Kick off the pipeline from inside Claude Code by invoking the orchestrator skill with a spec:
 
@@ -78,9 +123,9 @@ Kick off the pipeline from inside Claude Code by invoking the orchestrator skill
 /implement-spec <your spec or feature request>
 ```
 
-The orchestrator determines the task's scale, runs the matching flow, and **stops for your approval** at every `[STOP]` checkpoint before any code is changed. Every run leaves its work plan, task files, and quality/risk/usage reports under `docs/` — see [Usage](#7-usage) for the full lifecycle.
+The orchestrator determines the task's scale, runs the matching flow, and **stops for your approval** at every `[STOP]` checkpoint before any code is changed. Every run leaves its work plan, task files, and quality/risk/usage reports under `docs/` — see [Usage](#9-usage) for the full lifecycle.
 
-## 3. Repository / Folder Structure
+## 5. Repository / Folder Structure
 
 Everything lives under `.claude/`, the standard Claude Code configuration directory:
 
@@ -114,7 +159,7 @@ Everything lives under `.claude/`, the standard Claude Code configuration direct
     └── agent-doc-sync/             # Keep agent docs in sync
 ```
 
-### 3.1 Folder structure produced by agents at runtime
+### 5.1 Folder structure produced by agents at runtime
 
 When the pipeline runs against a target repo, agents write all artifacts under `docs/`, following the layout defined by the `documentation-criteria` skill:
 
@@ -138,7 +183,7 @@ docs/
 
 Each work plan gets its own `workPlanId` namespace, so multiple plans coexist without collisions.
 
-## 4. The Subagents
+## 6. The Subagents
 
 | Agent | Responsibility | Key output |
 | ------- | ---------------- | ------------ |
@@ -152,7 +197,7 @@ Each work plan gets its own `workPlanId` namespace, so multiple plans coexist wi
 
 All subagents respond in JSON conforming to the schemas in `subagents-orchestration-guide/reference/responses/`, and every response carries a `meta` block with token usage and execution time used to build the final usage report.
 
-## 5. How the Orchestrator Works
+## 7. How the Orchestrator Works
 
 The `implement-spec` skill is the single entry point. It is a pure **coordinator**: it drives the lifecycle using only `Agent`, `AskUserQuestion`, `TaskCreate`/`TaskUpdate`, read-only `Bash` (`git status`/`git diff`), and `Read`. All code edits are performed by subagents, and it never stages or commits — that is left to the user.
 
@@ -186,9 +231,9 @@ flowchart TD
 3. **Execute the workflow.** Each procedure defines a workflow table of steps. The orchestrator runs them in order, invoking each subagent with explicit inputs and file paths, bridging one subagent's JSON output into the next step's inputs, and **halting at every `[STOP]`** to obtain user approval via `AskUserQuestion` before continuing.
 4. **Compile the usage report.** After the workflow completes, it aggregates every subagent's `meta` usage (tokens + time) into **planning / execution / review** phases and writes the report to its canonical location.
 
-The specific steps for each procedure are detailed in [Scale Flows](#6-scale-flows) below.
+The specific steps for each procedure are detailed in [Scale Flows](#8-scale-flows) below.
 
-## 6. Scale Flows
+## 8. Scale Flows
 
 The orchestrator first runs `requirements-analyzer`, which classifies the task by its most significant dimension (**file count is the primary criterion**), then loads the matching procedure. A larger classification wins if any single dimension qualifies.
 
@@ -198,7 +243,7 @@ The orchestrator first runs `requirements-analyzer`, which classifies the task b
 | **Medium** | 3–5 files | Spans multiple components (new endpoint, module refactor) | `proc-002-standard-flow.md` |
 | **Large** | 6+ files | Architecture-level (new service, data-model change, cross-cutting refactor) | `proc-003-full-flow.md` |
 
-### 6.1 Small — Reduced Flow (PROC-001)
+### 8.1 Small — Reduced Flow (PROC-001)
 
 Minimal ceremony: plan → single task → execute.
 
@@ -210,7 +255,7 @@ flowchart TD
     C --> D([Done])
 ```
 
-### 6.2 Medium — Standard Flow (PROC-002)
+### 8.2 Medium — Standard Flow (PROC-002)
 
 Adds decomposition into multiple (parallelizable) tasks and a quality gate.
 
@@ -226,7 +271,7 @@ flowchart TD
     F --> G
 ```
 
-### 6.3 Large — Full Flow (PROC-003)
+### 8.3 Large — Full Flow (PROC-003)
 
 Adds independent risk analysis up front and a risk-review gate at the end.
 
@@ -247,7 +292,7 @@ flowchart TD
     J --> K
 ```
 
-### 6.4 After any flow — Usage Report
+### 8.4 After any flow — Usage Report
 
 Once the workflow completes, the orchestrator collects the `meta` block that every subagent returns — its execution time and token count — and aggregates the data into a usage report written to the canonical `docs/plans/usage/{workPlanId}/` location. Every run is attributed to one of three phases: **planning**, **execution**, or **review**.
 
@@ -259,7 +304,7 @@ The report (rendered from the `usage-report-template` in `documentation-criteria
 
 Together these give an auditable, per-run **and** per-phase breakdown of how long the pipeline took and how many tokens it spent.
 
-## 7. Usage
+## 9. Usage
 
 These definitions are meant to be placed in a project's `.claude/` directory (or shared globally). Kick off the pipeline by invoking the orchestrator skill with a spec:
 
@@ -271,7 +316,7 @@ The orchestrator will determine scale, run the appropriate flow, and **stop for 
 
 > **Note:** The orchestrator never stages or commits changes — it may run `git status` / `git diff` to verify state, but committing is left to you.
 
-## 8. Makefile
+## 10. Makefile
 
 Common developer tasks are exposed through the [`Makefile`](Makefile). Run a target with `make <target>`:
 
@@ -283,9 +328,9 @@ Common developer tasks are exposed through the [`Makefile`](Makefile). Run a tar
 make scan-secrets
 ```
 
-The generated `.secrets.baseline` is the same baseline consumed by the `detect-secrets` pre-commit hook (see [Pre-commit Hooks](#9-pre-commit-hooks)), so regenerating it keeps local scans and the commit-time gate in sync.
+The generated `.secrets.baseline` is the same baseline consumed by the `detect-secrets` pre-commit hook (see [Pre-commit Hooks](#11-pre-commit-hooks)), so regenerating it keeps local scans and the commit-time gate in sync.
 
-## 9. Pre-commit Hooks
+## 11. Pre-commit Hooks
 
 The repository uses [`pre-commit`](https://pre-commit.com) to enforce file hygiene, Markdown linting, and secret scanning before every commit. The hooks are defined in [`.pre-commit-config.yaml`](.pre-commit-config.yaml).
 
@@ -320,6 +365,6 @@ pre-commit run markdownlint # run a single hook by id
 
 Markdown rules live in [`.markdownlint.yaml`](.markdownlint.yaml): long lines (`MD013`), inline HTML (`MD033`), and a non-H1 first line (`MD041`) are allowed, and repeated headings are permitted under different parents (`MD024` `siblings_only`) to support the per-phase document templates.
 
-## 10. License
+## 12. License
 
 See [LICENSE](LICENSE).
