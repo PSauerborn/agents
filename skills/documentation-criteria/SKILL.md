@@ -33,8 +33,8 @@ Use templates to ensure consistency and quality in your documentation. Below are
 
 | Document Type | Template File |
 | --------------- | ---------------- |
-| Work Plan | `reference/work-plan-template.md` |
-| Task Executable File | `reference/task-template.md` |
-| Quality Report | `reference/quality-report-template.md` |
-| Usage Report | `reference/usage-report-template.md` |
-| Risk Plan | `reference/risk-plan-template.md` |
+| Work Plan | `${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/reference/work-plan-template.md` |
+| Task Executable File | `${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/reference/task-template.md` |
+| Quality Report | `${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/reference/quality-report-template.md` |
+| Usage Report | `${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/reference/usage-report-template.md` |
+| Risk Plan | `${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/reference/risk-plan-template.md` |

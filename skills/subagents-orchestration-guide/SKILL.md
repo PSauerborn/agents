@@ -83,10 +83,10 @@ Subagents always respond in JSON format. Schemas for responses are defined in th
 
 | Agent | Schema Location |
 | ------- | ---------------- |
-| requirements-analyzer | reference/responses/requirements-analyzer.jsonc |
-| work-planner | reference/responses/work-planner.jsonc |
-| risk-analyzer | reference/responses/risk-analyzer.jsonc |
-| task-decomposer | reference/responses/task-decomposer.jsonc |
-| task-executor | reference/responses/task-executor.jsonc |
-| quality-controller | reference/responses/quality-controller.jsonc |
-| risk-reviewer | reference/responses/risk-reviewer.jsonc |
+| requirements-analyzer | `${CLAUDE_PLUGIN_ROOT}/skills/subagents-orchestration-guide/reference/responses/requirements-analyzer.jsonc` |
+| work-planner | `${CLAUDE_PLUGIN_ROOT}/skills/subagents-orchestration-guide/reference/responses/work-planner.jsonc` |
+| risk-analyzer | `${CLAUDE_PLUGIN_ROOT}/skills/subagents-orchestration-guide/reference/responses/risk-analyzer.jsonc` |
+| task-decomposer | `${CLAUDE_PLUGIN_ROOT}/skills/subagents-orchestration-guide/reference/responses/task-decomposer.jsonc` |
+| task-executor | `${CLAUDE_PLUGIN_ROOT}/skills/subagents-orchestration-guide/reference/responses/task-executor.jsonc` |
+| quality-controller | `${CLAUDE_PLUGIN_ROOT}/skills/subagents-orchestration-guide/reference/responses/quality-controller.jsonc` |
+| risk-reviewer | `${CLAUDE_PLUGIN_ROOT}/skills/subagents-orchestration-guide/reference/responses/risk-reviewer.jsonc` |
