@@ -1,6 +1,7 @@
 ---
 name: subagents-orchestration-guide
 description: Guides subagent coordination through implementation workflows. Use when orchestrating multiple agents, managing workflow phases, or determining autonomous execution mode.
+skills: documentation-criteria
 ---
 
 Spec implementation orchestrators determine **what to accomplish** and **where to work**. Specialist subagents determine how to execute autonomously.
@@ -39,15 +40,18 @@ When a subagent cannot determine execution method from repo state and artifacts,
 
 ### Available Subagents
 
+The following table lists the available subagents, their descriptions, and their outputs. The `documentation-criteria` defines the canonical location for each of the output artifacts referenced below.
+
 | Name | Description | Outputs |
 | ------ | ------------- | -------- |
 | requirements-analyzer | Assesses task scope, dependencies, and scale to determine the orchestration procedure to follow | |
-| work-planner | Converts a user spec into a structured work plan with phases, tasks, and dependencies in `docs/plans/` | |
+| work-planner | Converts a user spec into a structured work plan with phases, tasks, and dependencies in their canonical location | |
 | risk-analyzer | Analyzes a work plan and produces a single risk plan document identifying risks, impacts, and mitigation strategies | |
-| task-decomposer | Decomposes a work plan into independent, single-commit-granularity task files in `docs/plans/tasks/` | |
+| task-decomposer | Decomposes a work plan into independent, single-commit-granularity task files in their canonical location | |
 | task-executor | Implements code changes based on provided specifications and task files | |
 | quality-controller | Reviews code changes against coding standards, produces a quality report, and creates remediation tasks for any violations | |
 | risk-reviewer | Reviews code changes against a risk plan and creates a remediation task for any risk mitigations required | |
+| documenter | Documents code changes — doc strings, API/OpenAPI schemas, READMEs, and change diffs — and produces a changeset in its canonical location | |
 
 ### Invoking Subagents
 
@@ -76,6 +80,7 @@ The following table lists the input parameters for each subagent. When invoking 
 | task-executor | **taskFilePath** (required): path to the executable task file (e.g. `docs/plans/tasks/{workPlanId}/TASK-{number}.md`). |
 | quality-controller | **workPlanId** (required): unique identifier for the current work plan. **requirements** (required): user request describing what to achieve. **context** (optional): recent changes, related issues, or additional constraints. |
 | risk-reviewer | **riskPlanPath** (required): path to the risk plan document. **workPlanId** (required): unique identifier for the current work plan. **requirements** (required): user request describing what to achieve. **context** (optional): recent changes, related issues, or additional constraints. |
+| documenter | **workPlanId** (required): ID of the work plan whose task files define the changeset to document. **context** (optional): recent changes, related issues, or additional constraints. |
 
 ### Subagent Responses
 
@@ -90,3 +95,4 @@ Subagents always respond in JSON format. Schemas for responses are defined in th
 | task-executor | `${CLAUDE_PLUGIN_ROOT}/skills/subagents-orchestration-guide/reference/responses/task-executor.jsonc` |
 | quality-controller | `${CLAUDE_PLUGIN_ROOT}/skills/subagents-orchestration-guide/reference/responses/quality-controller.jsonc` |
 | risk-reviewer | `${CLAUDE_PLUGIN_ROOT}/skills/subagents-orchestration-guide/reference/responses/risk-reviewer.jsonc` |
+| documenter | `${CLAUDE_PLUGIN_ROOT}/skills/subagents-orchestration-guide/reference/responses/documenter.jsonc` |

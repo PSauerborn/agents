@@ -23,6 +23,7 @@
 | 9 | risk-reviewer | Reviews risk plan, and identifies risk remediation tasks (if required). | Risk remediation executable task file written to its `documentation-criteria` canonical location. |
 | 10 | (orchestrator) | Determine if risk remediation execution is required based on output of `risk-reviewer` agent output. Skip step 11 if no remediation is required. | |
 | 11 | task-executor | Execute the risk remediation task (at its `documentation-criteria` canonical location) if present. | |
+| 12 | documenter | Update documentation. | Changeset written to the `documentation-criteria` canonical changeset location. |
 
 ## Additional Instructions
 

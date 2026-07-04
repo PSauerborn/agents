@@ -19,6 +19,8 @@ docs/
 │   │   └── TASK-QC-REMEDIATION.md             # QC remediation task (only if violations found)
 │   ├── quality/{workPlanId}/                  # Quality Reports
 │   │   └── {workPlanId}-quality-report.md
+│   ├── changesets/{workPlanId}/               # Diffs and change reports
+│   │   └── {workPlanId}-changeset.md
 │   ├── risk/{workPlanId}/                     # Risk Plans
 │   │   └── {workPlanId}-risk-plan.md
 │   └── usage/{workPlanId}/                    # Usage Reports
@@ -31,10 +33,11 @@ docs/
 
 Use templates to ensure consistency and quality in your documentation. Below are the available templates for different types of documents:
 
-| Document Type | Template File |
-| --------------- | ---------------- |
-| Work Plan | `${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/reference/work-plan-template.md` |
-| Task Executable File | `${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/reference/task-template.md` |
-| Quality Report | `${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/reference/quality-report-template.md` |
-| Usage Report | `${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/reference/usage-report-template.md` |
-| Risk Plan | `${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/reference/risk-plan-template.md` |
+| Document Type | When to Use | Template File |
+| --------------- | ---------------- | ---------------- |
+| Work Plan | When planning a new piece of work; authored by `work-planner` before decomposition | `${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/reference/work-plan-template.md` |
+| Task Executable File | When decomposing a work plan into single-commit tasks; authored by `task-decomposer` and consumed by `task-executor` | `${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/reference/task-template.md` |
+| Quality Report | When reporting coding-standards review findings; authored by `quality-controller` after execution | `${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/reference/quality-report-template.md` |
+| Usage Report | When summarizing resource/token usage for a work plan run | `${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/reference/usage-report-template.md` |
+| Risk Plan | When identifying and documenting risks for a work plan; authored by the risk analysis agents | `${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/reference/risk-plan-template.md` |
+| Changeset | When summarizing the changeset after code changes; authored by `documenter` (one per work plan, excludes brand-new files) | `${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/reference/changeset-template.md` |

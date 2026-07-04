@@ -19,6 +19,7 @@
 | 5 | quality-controller | Review code changes for adherence to standards, and generate task file for remediation (if required). | Quality report and (if required) a remediation task file, each written to its `documentation-criteria` canonical location. |
 | 6 | (orchestrator) | Determine if qc remediation execution is required based on output of `quality-controller` agent output. Skip step 7 if no remediation is required. | |
 | 7 | task-executor | Execute the quality-control remediation task (at its `documentation-criteria` canonical location) if present. | |
+| 8 | documenter | Update documentation. | Changeset written to the `documentation-criteria` canonical changeset location. |
 
 ## Additional Instructions
 
