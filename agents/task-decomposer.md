@@ -46,21 +46,27 @@ Size each task so it satisfies every criterion below. When they conflict, prefer
 
 ### Step 2: Task Decomposition
 
-Decompose the work plan into a set of individual tasks. Focus on the following principles:
+Decompose the work plan into a set of individual tasks to be executed independently by subagents. Focus on the following principles:
 
 - Decompose at 1 commit = 1 task granularity (logical change unit)
 - Ensure each task is independently executable (minimize interdependencies)
 - Clarify order when dependencies exist
 - Design implementation tasks in TDD format: Practice Red-Green-Refactor cycle in each task
-- Scope of responsibility: Up to "Failing test creation + Minimal implementation + Refactoring + Added tests passing" (overall quality is separate process)
+
+Tasks must cover only up to "Failing test creation + Minimal implementation + Refactoring + Added tests passing" (overall quality is separate process).
 
 ### Step 3: Task File Generation
 
-Using the `documentation-criteria` skill, generate a list of tasks. Generate individual task files at the canonical task location defined by that skill. Focus on the following principles:
+Using the `documentation-criteria` skill, generate a series of executable task files at the canonical task location defined by that skill. Each task file will be passed onto a subagent for processing.
 
-- Each task file should be self-contained and include all necessary context for execution
-- Document concrete executable procedures
-- Define clear completion criteria (within executor's scope of responsibility)
+When generating task files, ensure that:
+
+- Each task file is self-contained and includes all necessary context for execution by a subagent that only has the task file as context.
+- Each task file must documents a concrete, executable procedure that a subagent can execute independently.
+- Defines clear completion criteria (within executor's scope of responsibility).
+- Defines a concise set of target files that require modification, or provide vital context.
+
+When generating the list of target files, be sure to include files that need to be modified, and any additional files that provide context critical to the task. Subagents only load files that are listed in the executable task to minimize context.
 
 Each task should be assigned a task ID matching the regex `TASK-[0-9]{3}`, starting from `TASK-001`. The task ID should be unique within the work plan and increment sequentially.
 

@@ -46,6 +46,16 @@ The `documentation-criteria` skill is the single source of truth for where every
 
 Do not stage or commit any changes to the repo. You are permitted to use `git status` and `git diff` to verify the state of the repo, but you are not permitted to stage or commit any changes. Leave this to the user.
 
+### Autonomous Execution Mode
+
+The `plan-approvals` skill is the single source of truth for what autonomous execution mode means, when it is granted, and the conditions that require you to stop and return to the user. Follow that definition — do not restate it here.
+
+Orchestrator-specific notes:
+
+- You enter autonomous mode only after the user grants batch approval for the entire implementation phase (see the "Approve and enter autonomous execution mode" option in `plan-approvals`).
+- While in autonomous mode, continue to honor every `[Stop]` marker defined in the loaded procedure flow — those are approval points that fall outside the batch-approved scope and still require **AskUserQuestion** confirmation.
+- Autonomous mode governs your own progression between steps; it does not change how work is delegated. All implementation work still runs through subagents per the orchestration guide.
+
 ## Procedure
 
 ### Step 1: Scale Determination & Procedure Loading
