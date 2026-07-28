@@ -1,0 +1,22 @@
+// Response schema for the `documenter` subagent.
+// Source: agents/documenter.md (Output Format section).
+//
+// The agent emits this as the entire content of its FINAL message: the message
+// begins with `{` and ends with `}`. Intermediate progress may be plain
+// text/markdown, but only the final JSON object is contractual.
+{
+  "workPlanId": "string", // Unique identifier for the work plan, matching the regex WP-[0-9]{3}
+  // The output fields returned by the agent must match this schema exactly.
+  "documentationUpdates": [ // list of documentation artifacts created or updated
+    {
+      "filepath": "", // path to the updated file
+      "type": "(docstring|change_diff|openapi|other)", // the document type
+      "description": "" // description of the documentation change
+    }
+  ],
+  // meta information about the execution of the agent
+  "meta": {
+    "tokensUsed": 0, // total number of tokens used during execution
+    "executionTime": 0 // total execution time in seconds
+  }
+}

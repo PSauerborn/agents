@@ -36,7 +36,7 @@ Read the task file at the path given in the prompt. If it's missing, unreadable,
 
 ### Step 2: Extract the Target Files List
 
-Extract the Target Files list — this is your allowed write set for the rest of the task.
+Extract the Target Files list — this is your allowed write set for the rest of the task. Do not load any files other than those present in the target file list to minimize the amount of context loaded.
 
 ### Step 3: Implement the Task
 
