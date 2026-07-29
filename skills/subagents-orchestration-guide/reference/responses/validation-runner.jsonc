@@ -1,0 +1,30 @@
+// Response schema for the `validation-runner` subagent.
+// Envelope and final-message contract: see the agent-response-protocol skill.
+// Completed shape:
+{
+  "status": "completed",
+  "checksRun": [
+    {
+      "type": "build|test|lint|format|typecheck",
+      "command": "string", // exact command executed
+      "passed": true,
+      "summary": "string" // one-line result summary (e.g. "142 passed, 0 failed")
+    }
+  ],
+  "allPassed": false, // true only if every discovered check was run and passed
+  "failures": [
+    {
+      "command": "string", // the failing command
+      "outputExcerpt": "string", // relevant excerpt of the failure output (failing test/target names)
+      "suspectedFiles": ["string"] // manifest files correlated with the failure
+    }
+  ],
+  "remediationRequired": true, // true if any check failed
+  "remediationTaskPath": "docs/plans/tasks/{workPlanId}/TASK-VALIDATION-REMEDIATION.md" // null if allPassed
+}
+// Blocked shape:
+// {
+//   "status": "blocked",
+//   "reason": "manifest_not_found|checks_not_discoverable",
+//   "detail": "What is missing and what would unblock the agent"
+// }

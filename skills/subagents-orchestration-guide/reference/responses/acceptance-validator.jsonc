@@ -1,0 +1,21 @@
+// Response schema for the `acceptance-validator` subagent.
+// Envelope and final-message contract: see the agent-response-protocol skill.
+// Completed shape:
+{
+  "status": "completed",
+  "allCriteriaMet": false, // true only if every criterion has verdict "met"
+  "criteria": [
+    {
+      "criterion": "string", // the acceptance criterion, quoted or closely paraphrased from the spec
+      "verdict": "met|not_met|unverifiable",
+      "evidence": "string", // file:line and/or test executed with its result; empty only for unverifiable
+      "gap": "string" // for not_met: what is absent or wrong; for unverifiable: what clarification is needed
+    }
+  ]
+}
+// Blocked shape:
+// {
+//   "status": "blocked",
+//   "reason": "spec_not_found|plan_not_found|manifest_not_found",
+//   "detail": "What is missing and what would unblock the agent"
+// }

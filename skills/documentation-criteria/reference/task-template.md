@@ -4,7 +4,7 @@ Work Plan ID: WP-[0-9]{3}
 Task ID: TASK-[0-9]{3}
 Created Date: YYYY-MM-DD
 Description: [Headline summary of task contents]
-Task Dependencies: [Task IDs of tasks this task depends on. Omit if none.]
+Acceptance Criteria Covered: [Criterion IDs from the work plan traceability table, e.g. AC-1, AC-3. Omit if none.]
 
 ## Implementation Content
 
@@ -42,6 +42,17 @@ When present, the implementation sweeps the cases sharing the same path, contrac
 | --- | --- | --- | --- |
 | TASK-[0-9]{3} | [Dependency task title] | [blocks / informs] | [Artifact, contract, or output this task relies on] |
 
+## Remediation Context
+
+(Include this section only for remediation tasks — TASK-*-REMEDIATION files authored by reviewer agents. Omit otherwise.)
+
+- Source: [validation-runner | quality-controller | code-reviewer | security-reviewer | risk-reviewer]
+- Finding / failing command: [exact command or finding reference]
+- Evidence: [failure output excerpt or finding evidence]
+- Verification: [command or check that must pass for this task to complete]
+
+For remediation without a testable behavior change (e.g. lint, format, build fixes), replace the TDD cycle below with: reproduce the failure, apply the fix, re-run the Verification command until it passes.
+
 ## Implementation Steps (TDD: Red-Green-Refactor)
 
 ### 1. Red Phase
@@ -65,7 +76,9 @@ When present, the implementation sweeps the cases sharing the same path, contrac
 
 ## Completion Criteria
 
+- [ ] [Task-specific behavioral criterion, e.g. "POST /users/new returns 409 for duplicate username" — instantiated by task-decomposer]
 - [ ] All added tests pass
+- [ ] (Remediation tasks only) Verification command from Remediation Context passes
 
 ## Notes
 

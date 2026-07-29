@@ -1,0 +1,26 @@
+// Response schema for the `code-reviewer` subagent.
+// Envelope and final-message contract: see the agent-response-protocol skill.
+// Completed shape:
+{
+  "status": "completed",
+  "findingsCount": 0, // total number of verified findings
+  "findings": [
+    {
+      "category": "correctness|edge-case|design|test-coverage",
+      "filePath": "src/orders/checkout.py", // file the finding anchors to
+      "line": 42, // line the finding anchors to
+      "description": "string", // the defect, stated concretely
+      "failureScenario": "string", // concrete input/state that triggers the failure
+      "severity": "low|medium|high|critical",
+      "suggestedFix": "string"
+    }
+  ],
+  "remediationRequired": true, // true if any finding requires a code change
+  "remediationTaskPath": "docs/plans/tasks/{workPlanId}/TASK-CODE-REVIEW-REMEDIATION.md" // null if no findings require changes
+}
+// Blocked shape:
+// {
+//   "status": "blocked",
+//   "reason": "manifest_not_found|spec_not_found",
+//   "detail": "What is missing and what would unblock the agent"
+// }

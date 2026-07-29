@@ -1,27 +1,26 @@
 // Response schema for the `quality-controller` subagent.
-// Source: .claude/agents/quality-controller.md (Output Format section).
-//
-// The agent emits this as the entire content of its FINAL message: the message
-// begins with `{` and ends with `}`. Intermediate progress may be plain
-// text/markdown, but only the final JSON object is contractual.
+// Envelope and final-message contract: see the agent-response-protocol skill.
+// Completed shape:
 {
   "status": "completed",
-  "violationsFound": false, // true if any coding standards violations were found, false otherwise
-  "violationsCount": 0, // total number of coding standards violations found
-  "violations": [ // list of coding standards violations found
+  "violationsFound": false, // true if any coding standards violations were found
+  "violationsCount": 0, // total number of violations found
+  "violations": [
     {
-      "standardsFile": "GENERAL.md", // path to the coding standards file where the violation was found
+      "standardsFile": "GENERAL.md", // coding standards file containing the violated rule
       "ruleId": "GEN-001", // ID of the violated rule
-      "filePath": "cmd/main.go", // path to the file with the violation
-      "description": "Log level not configured via environment var" // description of the violation
+      "filePath": "cmd/main.go", // file containing the violation
+      "line": 42, // line the violation anchors to
+      "description": "Log level not configured via environment var"
     }
   ],
-  "qualityReportPath": "docs/plans/quality/{workPlanId}/{workPlanId}-quality-report.md", // path to the generated quality report
-  "qcRemediationRequired": true, // true if any coding standards violations were found that require remediation; false otherwise
-  "remediationTaskPath": "docs/plans/tasks/{workPlanId}/TASK-QC-REMEDIATION.md", // path to the generated remediation task if any violations were found; null if no violations were found
-  // meta information about the execution of the agent
-  "meta": {
-    "tokensUsed": 0, // total number of tokens used during execution
-    "executionTime": 0 // total execution time in seconds
-  }
+  "qualityReportPath": "docs/plans/quality/{workPlanId}/{workPlanId}-quality-report.md",
+  "qcRemediationRequired": true, // true if any violation requires remediation
+  "remediationTaskPath": "docs/plans/tasks/{workPlanId}/TASK-QC-REMEDIATION.md" // null if no violations were found
 }
+// Blocked shape:
+// {
+//   "status": "blocked",
+//   "reason": "manifest_not_found|standards_unreadable",
+//   "detail": "What is missing and what would unblock the agent"
+// }
