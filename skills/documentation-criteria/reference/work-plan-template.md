@@ -3,8 +3,9 @@
 Work Plan ID: WP-[0-9]{3}
 Created Date: YYYY-MM-DD
 Type: feature|fix|refactor
+Spec: [path to spec document this plan implements]
+Scale: Small|Medium|Large
 Description: [Headline summary of work plan]
-Estimated Duration: X days
 Estimated Impact: X files
 
 ## Objective
@@ -15,81 +16,79 @@ Estimated Impact: X files
 
 [Current state and why changes are needed]
 
+## Design-to-Plan Traceability
+
+Every acceptance criterion in the spec appears exactly once. `acceptance-validator`
+verifies the implemented changeset against this table.
+
+| Criterion ID | Acceptance Criterion (from spec) | Satisfied By |
+| --- | --- | --- |
+| AC-1 | [criterion text, e.g. "returns 409 if the username exists"] | Task 2, Task 3 |
+
 ## Implementation Phases
 
-### Phase 1: [Value Unit 1 Name] (Estimated commits: X)
+### Phase 1: [Value Unit 1 Name] (Estimated tasks: X)
 
 **Purpose**: [First vertical slice — proves approach works]
 **Verification**: [From Verification Strategy: early verification point]
 
 #### Tasks
 
-- [ ] Task 1: Implementation
-- [ ] Task 2: Verification per Verification Strategy
-- [ ] Quality check (staged)
+Identification level only — coverage and dependencies, no per-task implementation
+detail (that belongs to `task-decomposer`):
+
+- Task 1: [What it covers, e.g. "User creation endpoint (POST /users/new) including
+  duplicate-username handling (409)". Depends on: none]
+- Task 2: [Coverage description. Depends on: Task 1]
 
 #### Phase Completion Criteria
 
-- [ ] Early verification point passed
-- [ ] [Functional criteria]
+- [ ] [Functional criteria only — e.g. "early verification point passed"]
 
-### Phase 2: [Value Unit 2 Name] (Estimated commits: X)
+### Phase 2: [Value Unit 2 Name] (Estimated tasks: X)
 
 **Purpose**: [Subsequent value unit]
 **Verification**: [From Verification Strategy]
 
 #### Tasks
 
-- [ ] Task 1: Implementation
-- [ ] Task 2: Verification per Verification Strategy
-- [ ] Quality check
+- Task 3: [Coverage description. Depends on: Task 2]
 
 #### Phase Completion Criteria
 
 - [ ] [Functional criteria]
-- [ ] [Quality criteria]
 
-### Final Phase: Quality Assurance (Required) (Estimated commits: 1)
+## Verification Strategy
 
-**Purpose**: Cross-cutting quality assurance
+[How progress is verified during implementation: the early verification point for
+Phase 1, per-phase checks, and which tests or commands demonstrate each phase's
+completion criteria. Whole-changeset validation runs in the pipeline review stage.]
 
-#### Tasks
+## Failure Modes
 
-- [ ] Quality checks (types, lint, format)
-- [ ] Execute all tests
-- [ ] Coverage 70%+
-- [ ] Document updates
+[Known failure modes and edge cases the implementation must handle — checklist form.]
 
-### Quality Assurance
+- [ ] [e.g. duplicate username on concurrent requests]
 
-- [ ] Quality check (staged)
-- [ ] All tests pass
-- [ ] Static check pass
-- [ ] Lint check pass
-- [ ] Build success
+## Reference Contracts
+
+[Contract values downstream agents need: API shapes, status codes, schemas, enum
+values, integration points and their contracts.]
+
+## Review Scope
+
+[Focus areas for reviewers and scope boundaries — files or behaviors expected to
+remain unchanged, and why.]
 
 ## Completion Criteria
 
 - [ ] All phases completed
-- [ ] All integration/E2E tests passing
-- [ ] Staged quality checks completed (zero errors)
-- [ ] All tests pass
+- [ ] Every acceptance criterion in the traceability table satisfied
 - [ ] Necessary documentation updated
-- [ ] User review approval obtained
 
-## Progress Tracking
-
-### Phase 1
-
-- Start: YYYY-MM-DD HH:MM
-- Complete: YYYY-MM-DD HH:MM
-- Notes: [Any special remarks]
-
-### Phase 2
-
-- Start: YYYY-MM-DD HH:MM
-- Complete: YYYY-MM-DD HH:MM
-- Notes: [Any special remarks]
+Full-suite validation, coding standards, correctness, and security checks are
+performed by the pipeline review stage (`validation-runner`, `quality-controller`,
+`code-reviewer`, `security-reviewer`) — do not restate them as plan tasks.
 
 ## Notes
 

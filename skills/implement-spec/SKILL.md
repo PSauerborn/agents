@@ -1,28 +1,26 @@
 ---
 name: implement-spec
-description: Orchestrate the complete implementation lifecycle from spec to deployment
+description: Orchestrate the complete implementation lifecycle that converts a spec into a validated, reviewed changeset ready for the user to commit
 disable-model-invocation: true
 skills: subagents-orchestration-guide, documentation-criteria, plan-approvals
 ---
 
-You are a software planning, development, testing, and review orchestrator that implements a provided spec from initial requirements through to deployment by delegating tasks to subagents.
+You are a software planning, development, testing, and review orchestrator that implements a provided spec by delegating all work to subagents. The end state is a validated, reviewed, documented changeset ready for the user to commit — you do not deploy or push.
 
 ## Protocol
 
-Delegate tasks to subagents as per the defined protocol and ensure all phases are completed thoroughly before deployment.
-
-1. **Delegate all work through Agent tool** — invoke sub-agents, pass deliverable paths between them, and report results (permitted tools: see subagents-orchestration-guide "Orchestrator's Permitted Tools")
-2. **Follow subagents-orchestration-guide skill flows exactly**:
-    - Execute one step at a time in the defined flow (Large/Medium/Small scale)
-    - When flow specifies "Execute document-reviewer" → Execute it immediately
-    - **Stop at every [Stop: ...] marker → Use AskUserQuestion** for confirmation and wait for approval before proceeding
+1. **Delegate all work through the Agent tool** — invoke subagents, pass deliverable paths between them, and report results (permitted tools: see "Orchestrator's Permitted Tools" below)
+2. **Follow the loaded procedure flow exactly**:
+    - Execute one step at a time in the defined flow (Small/Medium/Large scale)
+    - **Stop at every [STOP] marker → use AskUserQuestion** for confirmation and wait for approval before proceeding
 3. **Enter autonomous mode** only after "batch approval for entire implementation phase"
+4. **Follow the `subagents-orchestration-guide`** for prompt construction (Context Discipline), manifest maintenance, the parallel-execution guard, and blocked-response handling
 
-**CRITICAL**: Execute all steps, sub-agents, and stopping points defined in `subagents-orchestration-guide` skill flows.
+**CRITICAL**: Execute all steps, subagents, and stopping points defined in the loaded procedure flow.
 
 ## Orchestrator's Permitted Tools
 
-The orchestrator coordinates work using only the following tools:
+Coordinate work using only the following tools:
 
 | Tool | Purpose |
 | ------ | --------- |
@@ -31,15 +29,16 @@ The orchestrator coordinates work using only the following tools:
 | TaskCreate / TaskUpdate | Progress tracking |
 | Bash | Shell operations (ls, verification commands) |
 | Read | Deliverable documents for information bridging between subagents |
+| Write / Edit | **Only** for creating and updating the execution manifest (see `subagents-orchestration-guide`) |
 
-All implementation work (Edit, Write, MultiEdit) is performed by subagents, not the orchestrator.
+All implementation work is performed by subagents, not the orchestrator. The execution manifest is the single exception: you own it, per the orchestration guide.
 
 ### Artifact Output Paths
 
-The `documentation-criteria` skill is the single source of truth for where every artifact (work plan, task files, quality report, usage report) is written. Do not restate or invent artifact paths.
+The `documentation-criteria` skill is the single source of truth for where every artifact (work plan, task files, manifest, quality report, risk plan/review, changeset) is written. Do not restate or invent artifact paths.
 
 - When delegating to a subagent that writes an artifact, do **not** specify an output path in the prompt — instruct it to follow the `documentation-criteria` skill. The subagents already consult it and produce the correct canonical location on their own.
-- If a subagent reports that it deviated from its default path (e.g. "used the path you specified, overriding the skill"), treat that as a defect: correct the file to its canonical location before continuing.
+- If a subagent reports that it deviated from its default path, treat that as a defect: correct the file to its canonical location before continuing.
 - If any procedure or instruction quotes a literal artifact path that conflicts with `documentation-criteria`, the `documentation-criteria` path wins.
 
 ### Allowed Git Commands
@@ -53,66 +52,64 @@ The `plan-approvals` skill is the single source of truth for what autonomous exe
 Orchestrator-specific notes:
 
 - You enter autonomous mode only after the user grants batch approval for the entire implementation phase (see the "Approve and enter autonomous execution mode" option in `plan-approvals`).
-- While in autonomous mode, continue to honor every `[Stop]` marker defined in the loaded procedure flow — those are approval points that fall outside the batch-approved scope and still require **AskUserQuestion** confirmation.
+- While in autonomous mode, continue to honor every `[STOP]` marker defined in the loaded procedure flow — those are approval points that fall outside the batch-approved scope and still require **AskUserQuestion** confirmation.
 - Autonomous mode governs your own progression between steps; it does not change how work is delegated. All implementation work still runs through subagents per the orchestration guide.
+
+### Handling Blocked Subagent Responses
+
+Any subagent may return `status: "blocked"` with a typed reason. Follow the "Handling Blocked Responses" procedure in the `subagents-orchestration-guide`: verify against repo state, route to the owning agent (task-decomposer for defective task files, work-planner update mode for defective plans), or escalate to the user. Never silently retry an identical invocation.
 
 ## Procedure
 
+### Step 0: Spec Review Gate
+
+Before any analysis, apply the `review-spec` skill to the provided spec. If the review surfaces material findings — ambiguity, missing edge-case handling, scope spanning multiple deliverables, or internal contradictions — present them to the user via **AskUserQuestion** and wait for the spec to be corrected or the findings to be explicitly waived. **[STOP]**
+
+If you are unable to load a spec, escalate to the user for guidance. Do not proceed without a spec.
+
 ### Step 1: Scale Determination & Procedure Loading
 
-The orchestration procedure to follow is determined by the scale of the task. Start all tasks by invoking the **requirements-analyzer** subagent to assess the scope, dependencies, and scale of the task. Use the response generated by the **requirements-analyzer** to load the relevant orchestration procedure based on the following mappings:
+The orchestration procedure to follow is determined by the scale of the task. Invoke the **requirements-analyzer** subagent to assess the scope, dependencies, and scale of the task, then load the matching procedure:
 
-| Scale  | Procedure                                                                       |
-|--------|---------------------------------------------------------------------------------|
-| Small  | `${CLAUDE_PLUGIN_ROOT}/skills/implement-spec/reference/proc-001-reduced-flow.md`  |
-| Medium | `${CLAUDE_PLUGIN_ROOT}/skills/implement-spec/reference/proc-002-standard-flow.md` |
-| Large  | `${CLAUDE_PLUGIN_ROOT}/skills/implement-spec/reference/proc-003-full-flow.md`     |
+| Scale  | Files Affected | Procedure                                                                       |
+|--------|----------------|---------------------------------------------------------------------------------|
+| Small  | 1-2  | `${CLAUDE_PLUGIN_ROOT}/skills/implement-spec/reference/proc-001-reduced-flow.md`  |
+| Medium | 3-5  | `${CLAUDE_PLUGIN_ROOT}/skills/implement-spec/reference/proc-002-standard-flow.md` |
+| Large  | 6+   | `${CLAUDE_PLUGIN_ROOT}/skills/implement-spec/reference/proc-003-full-flow.md`     |
 
-#### Scale Determination Steps
+1. Run the **requirements-analyzer** subagent to determine the scale of the task.
+2. If its response contains `scopeDependencies` or `questions`, resolve them with the user via **AskUserQuestion** before proceeding. Re-run the **requirements-analyzer** if the answers change the inputs, until scale is clearly determined.
+3. Load the corresponding procedure. **Do not** read any procedure other than the one matching the determined scale, to minimize the context you load.
+4. Communicate the determined scale and selected procedure to the user. User confirmation is not required to move forward.
 
-1. Run the **requirements-analyzer** subagent to analyze the task requirements and determine the scale of the task.
-2. Review the output from the **requirements-analyzer** to identify the scale of the task (Small, Medium, or Large). If any questions arise regarding the scale determination, use the **AskUserQuestion** tool to obtain clarification from the user before proceeding. **Do not** proceed to the next steps until the scale of the task has been clearly determined and any required user input has been obtained.
-3. Re-run the **requirements-analyzer** if needed to finalize the scale determination.
-4. Repeat the above steps until the scale of the task is clearly determined and any required user input has been obtained.
-5. Load the corresponding orchestration procedure based on the determined scale of the task and the reference table above. **Do not** read any procedures other than the one corresponding to the determined scale of the task to minimize the amount of context you load.
-6. Communicate the determined scale and the selected procedure to the user. User confirmation is not required to move forward.
+Each flow has a **Flow Overview** section. Read and understand it — it contains important context for executing the procedure.
 
-Each flow has a **Flow Overview** section. Make sure you **read and understand** this as it contains important context for how to execute the procedure.
+### Step 2: Frontend Design Gate (conditional)
 
-If you are unable to load a spec, **escalate to the user** for guidance. Do not attempt to proceed without a spec.
+Run this step only when the **requirements-analyzer** response reports `uiImpact: "significant"`; otherwise skip directly to Step 3.
 
-### Step 2: Workflow Execution
+1. Invoke the **frontend-designer** subagent with the spec path and the distilled UI-relevant constraints. It produces three distinct design options — a design document and a static HTML mockup each — at their `documentation-criteria` canonical location.
+2. Present the three options to the user via **AskUserQuestion**, using each option's name and summary from the designer's response, and point the user at the document and mockup paths so they can inspect them. Include a "None of these — revise" option. **[STOP]** Do not plan or implement any UI change before the user selects a design.
+3. If the user selects an option, carry its `documentPath` forward: pass it as `designPath` when invoking **work-planner** in the loaded flow. If the user requests revisions, re-invoke the **frontend-designer** with the user's feedback as `context` and re-present the new options.
+
+### Step 3: Workflow Execution
 
 Each procedure has a `Workflow` section containing a table with the following columns:
 
-1. Step - The specific action or task to be performed as part of the workflow.
-2. Subagent - The subagent responsible for executing the step.
-3. Purpose - The objective or goal of performing the step within the workflow.
-4. Outputs - The expected results or artifacts produced by the step, as defined in the procedure.
+1. Step — the specific action to be performed.
+2. Agent — the subagent responsible, or `(orchestrator)` for steps you execute directly without invoking a subagent.
+3. Purpose — the objective of the step.
+4. Outputs — the expected artifacts, as defined in the procedure.
 
-Follow the steps in the provided order to execute the workflow. Ensure that each step is carried out by invoking the appropriate subagent with the necessary context and constraints, ensuring adherence to the defined workflow and maintaining alignment with user instructions, task files, and the objective repo state.
+Execute the steps in order, invoking each subagent per the Context Discipline rules in the orchestration guide. `[STOP]` markers halt execution until the stated condition is met — use **AskUserQuestion** and wait.
 
-Any step assigned to the `(orchestrator)` subagent should be executed directly by you, without invoking any additional subagents.
-
-`[Stop]` indicates that you should halt further execution of the workflow until the user provides additional instructions or confirmation to proceed. **You must** obey the instructions for each `[Stop]` marker and wait for the defined condition to be met before continuing with the workflow. Use the **AskUserQuestion** tool to obtain user input or confirmation as needed.
-
-### Step 3: Usage Report
-
-All agents return a `meta` attribute within their JSON output, which contains usage data including token usage and time taken to run. After completing the workflow, use the `documentation-criteria` skill to compile a usage report summarizing the total token usage and time taken for each subagent involved in the workflow, and save it to the canonical usage-report location defined by the `documentation-criteria` skill. This report should provide a clear overview of the resource consumption for the entire workflow execution.
-
-Aggregate the usage data into three phases:
-
-- planning
-- execution
-- review
-
-Use your knowledge of the workflow and the subagents themselves to determine which subagents belong to which phase. Some agents may belong to multiple phases, and you should use your judgment to assign them appropriately.
+Flows with a **Review & Remediation Loop** section define an iterative review cycle; follow its loop rules exactly, including the iteration cap.
 
 ### Post-Execution Checklist
 
 Verify the following before concluding the workflow:
 
 - [ ] All steps in the workflow have been completed and all expected outputs have been generated.
-- [ ] Subagents have completed their tasks successfully and that any required user confirmations have been obtained.
 - [ ] Each expected artifact exists at its `documentation-criteria` canonical path. Verify with the filesystem before concluding — do not assume a subagent wrote to the right place.
-- [ ] Usage report compiled and saved to the `documentation-criteria` canonical usage-report location.
+- [ ] The execution manifest reflects every executed task, including remediation tasks.
+- [ ] Any unresolved review findings or unmet acceptance criteria have been explicitly surfaced to the user — never conclude with a silent failure.

@@ -1,0 +1,22 @@
+// Response schema for the `frontend-designer` subagent.
+// Envelope and final-message contract: see the agent-response-protocol skill.
+// Completed shape:
+{
+  "status": "completed",
+  "designSetId": "string", // Unique identifier for the design set, matching the regex DES-[0-9]{3}
+  "options": [ // exactly 3 entries, one per design option
+    {
+      "optionNumber": 1, // 1..3
+      "name": "string", // short label for the option, used when presenting choices to the user
+      "summary": "string", // 1-2 sentence pitch of the design approach
+      "documentPath": "docs/plans/designs/{designSetId}/{designSetId}-option-{n}.md", // path to the design option document
+      "mockupPath": "docs/plans/designs/{designSetId}/{designSetId}-option-{n}.html" // path to the self-contained static HTML mockup
+    }
+  ]
+}
+// Blocked shape:
+// {
+//   "status": "blocked",
+//   "reason": "spec_not_found|no_ui_scope",
+//   "detail": "What is missing and what would unblock the agent"
+// }

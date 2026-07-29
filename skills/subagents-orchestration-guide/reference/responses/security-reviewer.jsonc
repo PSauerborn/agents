@@ -1,0 +1,26 @@
+// Response schema for the `security-reviewer` subagent.
+// Envelope and final-message contract: see the agent-response-protocol skill.
+// Completed shape:
+{
+  "status": "completed",
+  "findingsCount": 0, // total number of verified findings
+  "findings": [
+    {
+      "vulnerabilityClass": "injection|authnz|secrets|deserialization|path-traversal-ssrf|dependency",
+      "filePath": "src/api/upload.py", // file the finding anchors to
+      "line": 42, // line the finding anchors to
+      "description": "string", // the vulnerability, stated concretely
+      "attackScenario": "string", // concrete scenario an attacker could execute
+      "severity": "low|medium|high|critical", // reflects exploitability and impact
+      "requiredFix": "string"
+    }
+  ],
+  "remediationRequired": true, // true if any finding requires a code change
+  "remediationTaskPath": "docs/plans/tasks/{workPlanId}/TASK-SEC-REMEDIATION.md" // null if no findings require changes
+}
+// Blocked shape:
+// {
+//   "status": "blocked",
+//   "reason": "manifest_not_found",
+//   "detail": "What is missing and what would unblock the agent"
+// }

@@ -1,23 +1,21 @@
 // Response schema for the `requirements-analyzer` subagent.
-// Source: .claude/agents/requirements-analyzer.md (Output Format section).
-//
-// The agent emits this as the entire content of its FINAL message: the message
-// begins with `{` and ends with `}`. Intermediate progress may be plain
-// text/markdown, but only the final JSON object is contractual.
+// Envelope and final-message contract: see the agent-response-protocol skill.
+// Completed shape:
 {
-  // the type of task being requested: feature, fix, refactor, performance, or
-  // security. determine using provided context and codebase.
+  "status": "completed",
+  // the type of task being requested, determined from provided context and codebase
   "taskType": "feature|fix|refactor|performance|security",
   "purpose": "Essential purpose of request (1-2 sentences)",
-  "scale": "small|medium|large", // refer to scale determination criteria (small: 1-2 files, medium: 3-5, large: 6+)
-  "confidence": "confirmed|provisional", // confidence in the scale determination based on clarity of requirements and codebase analysis
-  "affectedFiles": ["path/to/file1", "path/to/file2"], // list of files affected by the change
-  "fileCount": 3, // file count is the most important criteria for scale determination
-
-  // technical considerations, constraints, risks, and dependencies that may affect implementation
+  "scale": "small|medium|large", // per the scale criteria in the agent definition
+  "confidence": "confirmed|provisional", // confidence in the scale determination
+  // impact on the frontend UI, per the criteria in the agent definition;
+  // "significant" triggers the orchestrator's frontend design gate
+  "uiImpact": "significant|minor|none",
+  "affectedFiles": ["path/to/file1", "path/to/file2"], // files affected by the change
+  "fileCount": 3, // file count is the most important criterion for scale determination
   "technicalConsiderations": {
     "constraints": ["list"],
-    "risks": ["list"],
+    "risks": ["list"], // requirements-stage risks only; the risk register belongs to risk-analyzer
     "dependencies": ["list"]
   },
   // questions that affect the scope and scale of the work
@@ -27,17 +25,18 @@
       "impact": { "if_yes": "large", "if_no": "medium" }
     }
   ],
-  // general questions related to the work that require confirmation before proceeding
+  // general questions requiring confirmation before proceeding
   "questions": [
     {
       "category": "boundary|existing_code|dependencies",
       "question": "specific question",
       "options": ["A", "B", "C"]
     }
-  ],
-  // meta information about the execution of the agent
-  "meta": {
-    "tokensUsed": 0, // total number of tokens used during execution
-    "executionTime": 0 // total execution time in seconds
-  }
+  ]
 }
+// Blocked shape:
+// {
+//   "status": "blocked",
+//   "reason": "requirements_missing|repo_unreadable",
+//   "detail": "What is missing and what would unblock the agent"
+// }
