@@ -8,6 +8,9 @@
   "purpose": "Essential purpose of request (1-2 sentences)",
   "scale": "small|medium|large", // per the scale criteria in the agent definition
   "confidence": "confirmed|provisional", // confidence in the scale determination
+  // impact on the frontend UI, per the criteria in the agent definition;
+  // "significant" triggers the orchestrator's frontend design gate
+  "uiImpact": "significant|minor|none",
   "affectedFiles": ["path/to/file1", "path/to/file2"], // files affected by the change
   "fileCount": 3, // file count is the most important criterion for scale determination
   "technicalConsiderations": {

@@ -1,6 +1,6 @@
 ---
 name: requirements-analyzer
-description: Analyzes a spec or change request against the codebase to determine task type, work scale (small/medium/large), affected files, constraints, and open questions. Takes requirements text and optional context; returns a JSON scale assessment the orchestrator uses to select the orchestration flow.
+description: Analyzes a spec or change request against the codebase to determine task type, work scale (small/medium/large), affected files, UI impact, constraints, and open questions. Takes requirements text and optional context; returns a JSON scale assessment the orchestrator uses to select the orchestration flow.
 tools: Read, Grep, Glob, LS, Bash, WebSearch
 model: inherit
 skills: coding-standards, agent-response-protocol
@@ -49,11 +49,23 @@ Investigate the existing codebase to identify affected files:
 
 Classify based on the file count from Step 2 (small: 1-2, medium: 3-5, large: 6+). Cite specific file paths as evidence for the determination.
 
-### Step 4: Assess Technical Constraints and Risks
+### Step 4: Assess UI Impact
+
+Classify the change's impact on the frontend user interface, citing the affected UI files or screens as evidence:
+
+| uiImpact | Criteria |
+| --- | --- |
+| `significant` | New screens or views, new visual components, layout restructuring, or a visual redesign |
+| `minor` | Copy or styling tweaks within existing components; no structural change |
+| `none` | The change has no UI surface |
+
+The orchestrator uses `significant` to trigger the frontend design gate, so classify at `significant` only when the change genuinely warrants design alternatives.
+
+### Step 5: Assess Technical Constraints and Risks
 
 Identify constraints, risks, and dependencies that affect scoping or approach. Use WebSearch to verify the current technical landscape when evaluating unfamiliar technologies or dependencies. Retrieve the actual current date from the operating environment first — do not rely on your training cutoff.
 
-### Step 5: Formulate Questions
+### Step 6: Formulate Questions
 
 Identify ambiguities that affect scale determination (`scopeDependencies`) or require user confirmation before proceeding (`questions`).
 

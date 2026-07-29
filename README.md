@@ -36,11 +36,15 @@ Every run follows the same lifecycle; scale determines how much of it applies:
 ```mermaid
 flowchart TD
     SPEC([spec]) --> GATE["review-spec gate"]
-    GATE --> REQ["requirements-analyzer<br/>determine scale"]
+    GATE --> REQ["requirements-analyzer<br/>determine scale + UI impact"]
 
     REQ -->|"small · 1–2 files<br/>PROC-001"| PLAN
     REQ -->|"medium · 3–5 files<br/>PROC-002"| PLAN
     REQ -->|"large · 6+ files<br/>PROC-003"| PLAN
+
+    REQ -.->|"significant UI change"| DESIGN["frontend-designer<br/>3 design options"]
+    DESIGN --> SELECT["design selection"]
+    SELECT -.-> PLAN
 
     PLAN["work-planner<br/>work plan"] -->|"large only"| RISK["risk-analyzer<br/>risk plan"]
     PLAN --> APPROVE["plan approval"]
@@ -74,17 +78,17 @@ flowchart TD
     classDef stop fill:#fde4e4,stroke:#d64545,color:#4a1010
     classDef terminal fill:#e6f6ec,stroke:#2f9e5e,color:#0f3a22
 
-    class REQ,PLAN,DECOMP,MANIFEST,EXEC,VAL,DOC all
+    class REQ,PLAN,DECOMP,MANIFEST,EXEC,VAL,DOC,DESIGN all
     class QC,CR,SEC,ACCEPT med
     class RISK,RR large
-    class GATE,APPROVE,ESCALATE stop
+    class GATE,APPROVE,SELECT,ESCALATE stop
     class SPEC,DONE terminal
 
-    linkStyle 5 stroke-dasharray: 5 5
-    linkStyle 7 stroke-dasharray: 5 5
+    linkStyle 8 stroke-dasharray: 5 5
+    linkStyle 10 stroke-dasharray: 5 5
 ```
 
-Blue = every flow · amber = medium and large only · purple = large only · red = `[STOP]` checkpoints where the orchestrator waits for you.
+Blue = every flow · amber = medium and large only · purple = large only · red = `[STOP]` checkpoints where the orchestrator waits for you · dashed = conditional.
 
 | Scale | Files affected | Flow | Review stages |
 | ----- | -------------- | ---- | ------------- |
@@ -96,6 +100,7 @@ Key mechanics:
 
 - **Execution manifest** — the orchestrator maintains a single manifest of everything the executors changed; all reviewers and the documenter work from it rather than re-deriving the changeset.
 - **Review & remediation loop** — reviewers produce remediation task files; executors apply them; the flagging reviewer re-verifies. After 2 iterations with outstanding findings, the run stops and escalates to you.
+- **Frontend design gate** — when the requirements analysis reports a significant UI change, the `frontend-designer` produces three distinct design options (design doc + static HTML mockup each); the run stops until you select one, and the chosen design feeds the work plan.
 - **Parallel execution guard** — tasks run in parallel only when they have no dependency relationship and disjoint write sets.
 - **Blocked, not improvised** — any agent missing a required input returns `blocked` with a typed reason; the orchestrator routes the fix or escalates instead of letting agents guess.
 
@@ -103,8 +108,9 @@ Key mechanics:
 
 | Agent | Responsibility |
 | ----- | -------------- |
-| `requirements-analyzer` | Assess task type, affected files, and scale (small/medium/large) |
-| `work-planner` | Convert a spec + requirements summary into a structured work plan |
+| `requirements-analyzer` | Assess task type, affected files, scale (small/medium/large), and UI impact |
+| `frontend-designer` | Produce 3 distinct design options (doc + HTML mockup) for significant UI changes; user selects one |
+| `work-planner` | Convert a spec + requirements summary (and selected design, if any) into a structured work plan |
 | `risk-analyzer` | Produce a risk plan (risks, impacts, mitigations) from the work plan |
 | `task-decomposer` | Split the work plan into independent, single-commit task files |
 | `task-executor` | Implement exactly one task file (TDD: red-green-refactor) |

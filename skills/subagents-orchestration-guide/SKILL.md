@@ -73,7 +73,8 @@ The following table lists the available subagents. The `documentation-criteria` 
 
 | Name | Description | Outputs |
 | ------ | ------------- | -------- |
-| requirements-analyzer | Assesses task scope, dependencies, and scale to determine the orchestration procedure to follow | JSON assessment only |
+| requirements-analyzer | Assesses task scope, dependencies, scale, and UI impact to determine the orchestration procedure to follow | JSON assessment only |
+| frontend-designer | Produces three distinct frontend design options for a spec with significant UI changes; the user selects one before planning proceeds | Design option documents and static HTML mockups |
 | work-planner | Converts a spec and requirements summary into a structured work plan with phases, tasks, and dependencies | Work plan |
 | risk-analyzer | Analyzes a work plan and produces a risk plan identifying risks, impacts, and mitigation strategies | Risk plan |
 | task-decomposer | Decomposes a work plan into independent, single-commit-granularity task files | Task files |
@@ -93,7 +94,8 @@ When invoking a subagent, provide all required inputs and any relevant optional 
 | Agent | Input Parameters |
 | ------- | ---------------- |
 | requirements-analyzer | **requirements** (required): user request describing what to achieve. **context** (optional): recent changes, related issues, or additional constraints. |
-| work-planner | **specPath** (required): path to the spec. **requirementsSummary** (required): distilled requirements-analyzer fields (purpose, taskType, scale, affectedFiles, constraints). **mode** (default `create` \| `update`). **updateContext** (update mode only): path to existing plan and reason for changes. |
+| frontend-designer | **specPath** (required): path to the spec whose UI changes are being designed. **uiScope** (optional): distilled UI-relevant requirements and constraints from the requirements analysis. **context** (optional). |
+| work-planner | **specPath** (required): path to the spec. **requirementsSummary** (required): distilled requirements-analyzer fields (purpose, taskType, scale, affectedFiles, constraints). **designPath** (optional): path to the user-selected design option document, when the frontend design gate ran. **mode** (default `create` \| `update`). **updateContext** (update mode only): path to existing plan and reason for changes. |
 | risk-analyzer | **workPlanId** (required). **requirements** (required): user request describing what to achieve. **context** (optional). |
 | task-decomposer | **workPlanId** (required, e.g. `WP-001`). **planPath** (required): path to the work plan document. |
 | task-executor | **taskFilePath** (required): path to the executable task file (e.g. `docs/plans/tasks/{workPlanId}/TASK-{number}.md`). |
@@ -112,6 +114,7 @@ Subagents always respond per the `agent-response-protocol` skill: the final mess
 | Agent | Schema Location |
 | ------- | ---------------- |
 | requirements-analyzer | `${CLAUDE_PLUGIN_ROOT}/skills/subagents-orchestration-guide/reference/responses/requirements-analyzer.jsonc` |
+| frontend-designer | `${CLAUDE_PLUGIN_ROOT}/skills/subagents-orchestration-guide/reference/responses/frontend-designer.jsonc` |
 | work-planner | `${CLAUDE_PLUGIN_ROOT}/skills/subagents-orchestration-guide/reference/responses/work-planner.jsonc` |
 | risk-analyzer | `${CLAUDE_PLUGIN_ROOT}/skills/subagents-orchestration-guide/reference/responses/risk-analyzer.jsonc` |
 | task-decomposer | `${CLAUDE_PLUGIN_ROOT}/skills/subagents-orchestration-guide/reference/responses/task-decomposer.jsonc` |

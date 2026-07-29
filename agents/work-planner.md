@@ -35,6 +35,8 @@ Read the spec at `specPath` and use the provided `requirementsSummary`. Extract:
 - Technical dependencies and implementation order
 - Integration points and their contracts
 
+When `designPath` is provided, read the user-selected design option document at that path. The plan's UI tasks must implement that design — not an alternative you prefer — and the plan must cite the design document path so downstream agents inherit it.
+
 ### Step 3: Generate the Work Plan
 
 Using the `documentation-criteria` template, write the work plan to its canonical location. Include:
@@ -69,6 +71,7 @@ Before emitting the final JSON, confirm:
 
 - **specPath** (required): Path to the spec document to plan against
 - **requirementsSummary** (required): Distilled requirements-analyzer output — purpose, taskType, scale, affectedFiles, constraints
+- **designPath** (optional): Path to the user-selected design option document, when the frontend design gate ran
 - **mode**: create (default) | update
 - **updateContext** (update mode only): Path to existing plan, reason for changes
 
@@ -76,4 +79,4 @@ Before emitting the final JSON, confirm:
 
 Follow the `agent-response-protocol` skill. Your response schema: `${CLAUDE_PLUGIN_ROOT}/skills/subagents-orchestration-guide/reference/responses/work-planner.jsonc`.
 
-Blocked reasons: `spec_not_found` (specPath missing or unreadable), `input_missing` (requirementsSummary absent or lacks required fields), `plan_conflict` (update mode: existing plan missing or contradicts updateContext).
+Blocked reasons: `spec_not_found` (specPath missing or unreadable), `input_missing` (requirementsSummary absent or lacks required fields), `design_not_found` (designPath provided but missing or unreadable), `plan_conflict` (update mode: existing plan missing or contradicts updateContext).

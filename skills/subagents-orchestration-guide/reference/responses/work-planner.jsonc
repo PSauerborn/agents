@@ -9,6 +9,6 @@
 // Blocked shape:
 // {
 //   "status": "blocked",
-//   "reason": "spec_not_found|input_missing|plan_conflict",
+//   "reason": "spec_not_found|input_missing|design_not_found|plan_conflict",
 //   "detail": "What is missing and what would unblock the agent"
 // }

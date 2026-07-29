@@ -84,7 +84,15 @@ The orchestration procedure to follow is determined by the scale of the task. In
 
 Each flow has a **Flow Overview** section. Read and understand it — it contains important context for executing the procedure.
 
-### Step 2: Workflow Execution
+### Step 2: Frontend Design Gate (conditional)
+
+Run this step only when the **requirements-analyzer** response reports `uiImpact: "significant"`; otherwise skip directly to Step 3.
+
+1. Invoke the **frontend-designer** subagent with the spec path and the distilled UI-relevant constraints. It produces three distinct design options — a design document and a static HTML mockup each — at their `documentation-criteria` canonical location.
+2. Present the three options to the user via **AskUserQuestion**, using each option's name and summary from the designer's response, and point the user at the document and mockup paths so they can inspect them. Include a "None of these — revise" option. **[STOP]** Do not plan or implement any UI change before the user selects a design.
+3. If the user selects an option, carry its `documentPath` forward: pass it as `designPath` when invoking **work-planner** in the loaded flow. If the user requests revisions, re-invoke the **frontend-designer** with the user's feedback as `context` and re-present the new options.
+
+### Step 3: Workflow Execution
 
 Each procedure has a `Workflow` section containing a table with the following columns:
 
