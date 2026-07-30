@@ -11,6 +11,8 @@ Outputs should be organized in a clear and consistent directory structure within
 
 ```text
 docs/
+├── specs/                                     # Feature specs (created by init-spec, passed to agents as specPath)
+│   └── SPEC-{ID}.md
 ├── plans/                                     # Work Plans
 │   ├── {YYYY-MM-DD}-{workPlanId}.md
 │   ├── tasks/{workPlanId}/                    # decomposed task files

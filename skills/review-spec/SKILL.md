@@ -6,6 +6,8 @@ description: Review a feature spec for clarity, conciseness, completeness, scope
 
 Specs are documents that outline a set of features that need to be implemented. Specs are converted into implementation plans by agent. Implementations plans are then actioned by agents.
 
+Specs are normally created from the canonical template at `skills/init-spec/reference/spec-template.md` (via the `init-spec` skill) — expect that structure (numbered sections, `REQ-*` requirements, `AC-*` acceptance criteria) and flag deviations from it.
+
 Review the spec at $1 and produce a report on the following criteria:
 
 1. Conciseness - specs should be concise, avoiding unnecessary verbosity while still providing all necessary information.
@@ -32,36 +34,55 @@ Implement a REST API with the following endpoints:
 Conversely, the following is an example of a good spec. It is clearly structured, contains details on how features should be implemented and provides useful context on how to handle edge cases. It is well scoped to a single, coherent deliverable rather than implementing multiple components at once.
 
 ````md
-<!-- GOOD: spec structure provides context for agents -->
-# Overview
+<!-- GOOD: spec follows the canonical template structure -->
+# SPEC-004: Users Router
+
+Spec ID: SPEC-004
+Spec Date: 2026-01-15
+
+## 1. Spec Statement
+
+As an API consumer I want user management endpoints So that clients can create users and fetch their own profile.
+
+## 2. Context and Background
 
 <!-- GOOD: spec provides overview for context, not just instructions -->
-The core REST API manages the core entities present in the PostgreSQL database, including users, orders, and payments.
+The core REST API manages the core entities present in the PostgreSQL database, including users, orders, and payments. User management endpoints are currently missing.
 
-<!-- GOOD:: spec is scoped to a single, functional deliverable -->
-Implement a new users router that includes the following endpoints:
+## 3. Scope Definitions
 
-- POST /users/new - create a new user
-- GET /users/me - get the current user profile
+### 3.1 In Scope
 
-## Endpoints
+<!-- GOOD: spec is scoped to a single, functional deliverable -->
+ - `POST /users/new` — create a new user
+ - `GET /users/me` — get the current user profile
 
-### POST /users/new
+### 3.2 Out of Scope
 
-Create a new user using the following payload:
+ - Authentication and session handling (provided by the gateway)
 
-```json
-{
-    "username": "j.doe",
-    "name": "John Doe",
-    "age": 25
-}
-```
-<!-- GOOD: spec provides detail on how edge cases should be handled. -->
-If a user with the provided username already exists, return a `409` error.
+## 4. Requirements
 
-### GET /users/me
+<!-- GOOD: stable REQ IDs make requirements referenceable and testable -->
+ - **REQ-1**: `POST /users/new` MUST create a user from `{"username": "j.doe", "name": "John Doe", "age": 25}`.
+ - **REQ-2**: Creating a user with an existing username MUST return `409`.
+ - **REQ-3**: `GET /users/me` MUST resolve the user from the `X-Authenticated-UserId` header and return `404` when no user exists.
 
-Fetch the user profile from PostgreSQL using the `X-Authenticated-UserId` header provided in the request. If a user does not exist, return a `404` error.
+## 5. Acceptance Criteria
 
+<!-- GOOD: each criterion is observable and maps to a requirement -->
+ - **AC-1** (REQ-1): Given a valid payload, when `POST /users/new` is called, then a `201` is returned and the user is persisted.
+ - **AC-2** (REQ-2): Given user `j.doe` exists, when `POST /users/new` is called with username `j.doe`, then a `409` is returned.
+ - **AC-3** (REQ-3): Given no matching user, when `GET /users/me` is called, then a `404` is returned.
+
+## 6. Contracts and Constraints
+
+ - **API Contract**: request and response shapes are defined in docs/openapi.yaml.
+
+## 7. Edge Cases and Error Handling
+
+<!-- GOOD: spec provides detail on how edge cases should be handled -->
+ - **Malformed payload**: `POST /users/new` returns `400` without persisting anything.
+
+<!-- Sections 8 and 9 omitted for brevity — write `None` when not applicable -->
 ````

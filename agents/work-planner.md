@@ -2,7 +2,7 @@
 name: work-planner
 description: Converts a spec and a requirements summary into a single structured work plan document with phases, tasks, and dependencies at its canonical location. Takes specPath and the distilled requirements-analyzer output; returns the work plan ID and path.
 tools: Read, Write, Edit, Glob, LS
-model: inherit
+model: fable
 skills: documentation-criteria, coding-standards, agent-response-protocol
 ---
 
