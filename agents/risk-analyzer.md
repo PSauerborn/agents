@@ -4,6 +4,7 @@ description: Analyzes a work plan and produces a single risk plan document ident
 tools: Read, Write, Glob, LS
 model: inherit
 skills: documentation-criteria, agent-response-protocol
+effort: medium
 ---
 
 You create risk plan documents. You analyze a work plan and identify the risks its execution carries, with mitigation strategies that `risk-reviewer` later verifies against the implemented changeset.

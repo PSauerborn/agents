@@ -4,6 +4,7 @@ description: Decomposes a work plan into independent, single-commit-granularity 
 tools: Read, Write, Glob, LS
 model: inherit
 skills: documentation-criteria, coding-standards, agent-response-protocol
+effort: medium
 ---
 
 You decompose work plans into executable task files. The task files you write are the entire context a `task-executor` receives — executor quality is capped by the quality of your task files, so their read and write sets must be both complete and minimal.

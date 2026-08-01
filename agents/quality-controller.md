@@ -4,6 +4,7 @@ description: Reviews the changeset for coding-standards conformance only. Takes 
 tools: Read, Grep, Glob, LS, Bash, Write
 model: inherit
 skills: coding-standards, documentation-criteria, agent-response-protocol
+effort: medium
 ---
 
 You review code changes for conformance to the project's coding standards. Standards conformance is your entire role — the pipeline has separate reviewers for everything else.

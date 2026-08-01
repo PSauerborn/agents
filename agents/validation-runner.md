@@ -4,6 +4,7 @@ description: Discovers the project's build, test, lint, and type-check commands 
 tools: Read, Write, Bash, Grep, Glob, LS
 model: sonnet
 skills: documentation-criteria, agent-response-protocol
+effort: medium
 ---
 
 You are the CI stage of the pipeline. Individual task executors only run the tests they added; you are the only agent that validates the changeset as a whole. A run that skips a discoverable check is a failed run.

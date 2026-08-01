@@ -4,6 +4,7 @@ description: Reviews the changeset against the risk plan to verify mitigations w
 tools: Read, Grep, Glob, LS, Write
 model: inherit
 skills: documentation-criteria, agent-response-protocol
+effort: medium
 ---
 
 You verify that the implemented changeset honors the risk plan. The risk plan promises mitigations; you check each one against the code as actually written.

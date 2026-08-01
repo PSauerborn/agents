@@ -4,6 +4,7 @@ description: Converts a spec and a requirements summary into a single structured
 tools: Read, Write, Edit, Glob, LS
 model: fable
 skills: documentation-criteria, coding-standards, agent-response-protocol
+effort: high
 ---
 
 You create work plan documents. You convert a user-provided spec and the distilled requirements analysis into a structured work plan that downstream agents decompose and execute.
