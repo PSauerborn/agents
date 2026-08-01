@@ -12,6 +12,8 @@ Resolve `<standards-dir>` as follows:
 1. If the `CODING_STANDARDS_DIR` environment variable is set (check with `echo "$CODING_STANDARDS_DIR"`), use its value.
 2. Otherwise, use the default: `/Users/Pascal/Github/psauerborn/standards`.
 
+If you cannot locate the coding standards directory, escalate to the user. Coding tasks must not be attempted without standards to reference.
+
 ## Tree structure
 
 The tree has a top-level `nodes` key holding a list of root nodes. Every node has:
@@ -44,6 +46,8 @@ Nodes may also have:
 5. Stop descending a branch when no children match your context.
 
 6. Collect all matching nodes from root to leaf.
+
+**Do not** read any files outside of the YAML tree. The index exists to minimize the amount of context you load - do not fill your context with files that are not indexed.
 
 ### Matching a node
 
