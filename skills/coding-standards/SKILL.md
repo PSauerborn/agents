@@ -74,3 +74,5 @@ Note that a `scope` of `*` does not make a node universally relevant — topic-s
 ### Examples
 
 Standards documents are rules-only; worked code examples live in the companion files listed under a node's `examples` key. Each entry names the statement IDs it illustrates. Do **not** read every example — after identifying which statements are relevant to your task, read only the example files whose `statements` list covers those IDs. Each example file is small and self-contained, so reading the cited file is the minimal read.
+
+Reading examples is **required** - if a statement is relevant to your task, you **must** read any associated examples.

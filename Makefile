@@ -6,3 +6,20 @@ scan-secrets:
 	@detect-secrets audit .secrets.baseline
 
 	@echo "Scan complete. Results saved to .secrets.baseline"
+
+.PHONY: claude
+claude:
+	@echo "Initiating sandboxed claude session..."
+	@docker build \
+		--pull \
+		--build-arg AGENTS_VERSION=0.1.0 \
+		--build-arg CODING_STANDARDS_VERSION=v0.1.0-standards \
+		--build-arg CLAUDE_CODE_VERSION=latest \
+		-t claude-sandbox \
+		-f Dockerfile.claude \
+		.
+
+	@docker run --rm \
+		-v $(PWD):/home/agent/workspace \
+		-it \
+		claude-sandbox
