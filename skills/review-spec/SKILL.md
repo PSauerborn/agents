@@ -16,6 +16,10 @@ Review the spec at $1 and produce a report on the following criteria:
 4. Scope - specs should have a narrow scope, and should focus on a single deliverable.
 5. Inconsistencies - specs should be self-consistent, and should not contradict themselves.
 
+Write a MD report to summarize your findings based on the criteria above at `SPEC-*-REVIEW.md`. Include specific examples from the spec to support your evaluation. The report must contain a checklist of suggested fixes for each issue identified.
+
+If a spec review already exists, update it with the new findings rather than creating a new file. Check off any items in the checklist that have been addressed, and add new items for any newly identified issues. Do not delete any existing items from the checklist, even if they have been addressed.
+
 ## Examples
 
 The following is an example of a bad spec. It has no inherent structure, and gives little/no context on how the logic should be implemented, and how edge cases should be handled.
