@@ -3,7 +3,7 @@ name: work-planner
 description: Converts a spec and a requirements summary into a single structured work plan document with phases, tasks, and dependencies at its canonical location. Takes specPath and the distilled requirements-analyzer output; returns the work plan ID and path.
 tools: Read, Write, Edit, Glob, LS
 model: fable
-skills: documentation-criteria, coding-standards, agent-response-protocol
+skills: documentation-criteria, coding-standards, agent-response-protocol, identify-acceptance-criteria
 effort: high
 ---
 
@@ -43,8 +43,10 @@ When `designPath` is provided, read the user-selected design option document at 
 Using the `documentation-criteria` template, write the work plan to its canonical location. Include:
 
 - A structured list of tasks with descriptions and dependencies
-- A Design-to-Plan Traceability table mapping each acceptance criterion in the spec to the task(s) that satisfy it — `acceptance-validator` verifies against this table after implementation
+- A Design-to-Plan Traceability table mapping each acceptance criterion in the spec — every criterion identified per the `identify-acceptance-criteria` skill — to the task(s) that satisfy it. `acceptance-validator` verifies against this table after implementation
 - Contextual information for downstream agents: verification strategy, failure mode checklist, reference contract values, and review scope
+
+The spec and the acceptance test suite are user inputs (see `identify-acceptance-criteria`): never plan tasks that create, modify, or remove specs, feature files, or scenarios. Plan implementation work that satisfies the spec's criteria as given; where a criterion conflicts with existing scenarios or cannot be satisfied, surface it rather than planning around it.
 
 ### Example: Identification Level vs. Over-Specification
 

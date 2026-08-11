@@ -33,11 +33,21 @@ As a ... I want to ... So that ...
 
 ## 5. Acceptance Criteria
 
-(Define **observable, verifiable conditions** that prove the requirements are met. Prefer a Given/When/Then form so each criterion maps to a test. Every requirement in Section 4 should be covered by at least one criterion.)
+Acceptance criteria live in `acceptance/features/`, organized by capability rather than by spec. Scenarios verifying this spec are tagged `@[lowercase(Spec ID)]` and can be run in isolation using `godog --tags='@[lowercase(Spec ID)]'`.
 
-- **AC-1** (REQ-1): Given a valid payload, when `POST /users/new` is called, then a `201` is returned and the user is persisted.
-- **AC-2** (REQ-2): Given an existing user `j.doe`, when `POST /users/new` is called with username `j.doe`, then a `409` is returned and no user is created.
-- **AC-3** (REQ-3): Given no user matches the `X-Authenticated-UserId` header, when `GET /users/me` is called, then a `404` is returned.
+Feature files are cross-cutting by design — feature files contain scenarios tagged with other spec IDs. Scenarios can also be tagged with multiple spec IDs. The tag, not the file, is the unit of ownership. Only scenarios tagged with `@[lowercase(Spec ID)]` should be considered included as acceptance criteria for this spec.
+
+(Map each requirement to the Gherkin acceptance-test scenarios that verify it, per the `identify-acceptance-criteria` skill. Each criterion carries a stable `AC-*` ID so it can be referenced from work plans, task files, and PRs. Maintained by the spec author and read-only for agents — scenarios in the suite are named to match these entries verbatim.)
+
+| Criterion ID | Requirement | Scenario (tagged `@spec-NNN`) |
+| ------------ | ----------- | ----------------------------- |
+| AC-1         | REQ-1       | A new user is created from a valid payload |
+
+### 5.1 Additional Acceptance Criteria
+
+(Spec-specific criteria that cannot be cleanly expressed as a Gherkin scenario — performance targets, data-migration outcomes, operational or non-functional conditions. Each carries an `AC-*` ID continuing the mapping table's sequence and references the requirement it verifies. Like the mapping table, maintained by the spec author and read-only for agents. Write `None` if not applicable.)
+
+- **AC-2** (REQ-1): User creation completes within 200ms at p95 under nominal load.
 
 ## 6. Contracts and Constraints
 

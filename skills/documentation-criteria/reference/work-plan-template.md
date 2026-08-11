@@ -18,12 +18,15 @@ Estimated Impact: X files
 
 ## Design-to-Plan Traceability
 
-Every acceptance criterion in the spec appears exactly once. `acceptance-validator`
+Every acceptance criterion in the spec appears exactly once — both mapped scenarios
+and Additional Acceptance Criteria (spec section 5.1). A requirement may span
+multiple rows; requirements with no criteria are omitted. `acceptance-validator`
 verifies the implemented changeset against this table.
 
-| Criterion ID | Acceptance Criterion (from spec) | Satisfied By |
-| --- | --- | --- |
-| AC-1 | [criterion text, e.g. "returns 409 if the username exists"] | Task 2, Task 3 |
+| Criterion ID | Requirement | Acceptance Criterion (from spec) | Satisfied By |
+| --- | --- | --- | --- |
+| AC-1 | REQ-2 | [mapped scenario name, e.g. "Creating a user with a duplicate username is rejected"] | Task 2, Task 3 |
+| AC-2 | REQ-1 | [additional criterion, e.g. "User creation completes within 200ms at p95"] | Task 2 |
 
 ## Implementation Phases
 
