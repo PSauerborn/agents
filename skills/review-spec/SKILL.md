@@ -1,12 +1,12 @@
 ---
 name: review-spec
 argument-hint: spec-path
-description: Review a feature spec for clarity, conciseness, completeness, scope, and inconsistencies.
+description: Review a feature spec for clarity, conciseness, completeness, scope, inconsistencies, and acceptance-criteria traceability.
 ---
 
 Specs are documents that outline a set of features that need to be implemented. Specs are converted into implementation plans by agent. Implementations plans are then actioned by agents.
 
-Specs are normally created from the canonical template at `skills/init-spec/reference/spec-template.md` (via the `init-spec` skill) — expect that structure (numbered sections, `REQ-*` requirements, `AC-*` acceptance criteria) and flag deviations from it.
+Specs are normally created from the canonical template at `skills/init-spec/reference/spec-template.md` (via the `init-spec` skill) — expect that structure (numbered sections, `REQ-*` requirements, acceptance criteria expressed as `@spec-NNN`-tagged Gherkin scenarios with an `AC-*`-keyed requirement-to-scenario mapping table, plus optional Additional Acceptance Criteria for conditions not cleanly expressible in Gherkin) and flag deviations from it.
 
 Review the spec at $1 and produce a report on the following criteria:
 
@@ -15,6 +15,12 @@ Review the spec at $1 and produce a report on the following criteria:
 3. Completeness - specs should be comprehensive, and include details on contracts between components, interfaces, and how various edge cases should be handled.
 4. Scope - specs should have a narrow scope, and should focus on a single deliverable.
 5. Inconsistencies - specs should be self-consistent, and should not contradict themselves.
+6. Traceability - the `REQ` → `AC` → scenario chain must be intact. Verify:
+   - Every `AC-*` (mapping table and Additional Acceptance Criteria) references a `REQ-*` defined in the Requirements section, and every referenced `REQ-*` exists.
+   - `AC-*` IDs are unique across the mapping table and the Additional Acceptance Criteria combined, with no gaps or duplicates in the sequence.
+   - Where the project has an acceptance test suite (locate it per the `identify-acceptance-criteria` skill), every scenario named in the mapping table exists in the suite with a verbatim-matching `Scenario:` line carrying the spec's `@spec-NNN` tag, and every scenario in the suite tagged with this spec's ID appears in the mapping table.
+
+Flag every traceability mismatch to the user in the report — the spec and the acceptance test suite are both user inputs, so never edit either to reconcile them.
 
 Write a MD report to summarize your findings based on the criteria above at `SPEC-*-REVIEW.md`. Include specific examples from the spec to support your evaluation. The report must contain a checklist of suggested fixes for each issue identified.
 
@@ -74,10 +80,14 @@ The core REST API manages the core entities present in the PostgreSQL database, 
 
 ## 5. Acceptance Criteria
 
-<!-- GOOD: each criterion is observable and maps to a requirement -->
- - **AC-1** (REQ-1): Given a valid payload, when `POST /users/new` is called, then a `201` is returned and the user is persisted.
- - **AC-2** (REQ-2): Given user `j.doe` exists, when `POST /users/new` is called with username `j.doe`, then a `409` is returned.
- - **AC-3** (REQ-3): Given no matching user, when `GET /users/me` is called, then a `404` is returned.
+<!-- GOOD: criteria are tagged scenarios; every requirement maps to the scenarios verifying it -->
+Scenarios verifying this spec are tagged `@spec-004` and can be run in isolation using `godog --tags='@spec-004'`.
+
+| Criterion ID | Requirement | Scenario (tagged `@spec-004`) |
+| ------------ | ----------- | ----------------------------- |
+| AC-1         | REQ-1       | A new user is created from a valid payload |
+| AC-2         | REQ-2       | Creating a user with a duplicate username is rejected |
+| AC-3         | REQ-3       | An unmatched authenticated user is not found |
 
 ## 6. Contracts and Constraints
 

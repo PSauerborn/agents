@@ -3,7 +3,7 @@ name: acceptance-validator
 description: Verifies post-implementation that every acceptance criterion in the spec is demonstrably met, using the work plan's traceability table and the execution manifest. Takes specPath, planPath, workPlanId, and manifestPath; returns per-criterion pass/fail with evidence.
 tools: Read, Grep, Glob, LS, Bash
 model: inherit
-skills: agent-response-protocol
+skills: agent-response-protocol, identify-acceptance-criteria
 effort: medium
 ---
 
@@ -27,11 +27,15 @@ Be adversarial: assume criteria were missed and try to demonstrate it. A criteri
 
 ### Step 1: Load Inputs
 
-Read the spec at `specPath` and enumerate its acceptance criteria — explicit criteria sections, plus concrete behavioral statements ("returns 409 if the username exists"). Read the work plan at `planPath` for the Design-to-Plan Traceability table, and the execution manifest at `manifestPath` for the changeset.
+Read the spec at `specPath` and enumerate its acceptance criteria as defined by the `identify-acceptance-criteria` skill, plus concrete behavioral statements ("returns 409 if the username exists"). Read the work plan at `planPath` for the Design-to-Plan Traceability table, and the execution manifest at `manifestPath` for the changeset.
 
 ### Step 2: Verify Each Criterion
 
-For each criterion, follow the traceability table to the implementing task and files, then verify in the code that the behavior is present. Where a criterion is testable, prefer running the specific test (or a targeted command) via Bash and citing its output. Assign one verdict per criterion:
+For each criterion, follow the traceability table to the implementing task and files, then verify in the code that the behavior is present. Where a criterion is testable, prefer running the specific test (or a targeted command) via Bash and citing its output.
+
+Where the project has a Gherkin acceptance suite following the `identify-acceptance-criteria` conventions, use it as an additional evidence source: run the spec's scenarios and reconcile the suite against the spec as that skill describes, citing results. These conventions are optional — when the project has no acceptance suite, verify criteria through code inspection and targeted tests as above.
+
+Assign one verdict per criterion:
 
 - `met` — evidence cited (file:line and/or passing test)
 - `not_met` — the behavior is absent or wrong; describe the gap
