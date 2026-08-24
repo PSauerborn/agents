@@ -113,3 +113,7 @@ Verify the following before concluding the workflow:
 - [ ] Each expected artifact exists at its `documentation-criteria` canonical path. Verify with the filesystem before concluding — do not assume a subagent wrote to the right place.
 - [ ] The execution manifest reflects every executed task, including remediation tasks.
 - [ ] Any unresolved review findings or unmet acceptance criteria have been explicitly surfaced to the user — never conclude with a silent failure.
+
+### Additional Instructions
+
+$1
