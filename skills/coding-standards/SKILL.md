@@ -7,12 +7,7 @@ description: Find and apply the coding standards relevant to the files being wor
 
 ## Locating the standards directory
 
-Resolve `<standards-dir>` as follows:
-
-1. If the `CODING_STANDARDS_DIR` environment variable is set (check with `echo "$CODING_STANDARDS_DIR"`), use its value.
-2. Otherwise, use the default: `/Users/Pascal/Github/psauerborn/standards`.
-
-If you cannot locate the coding standards directory, escalate to the user. Coding tasks must not be attempted without standards to reference.
+`<standards-dir>` is the value of the `CODING_STANDARDS_DIR` environment variable (check with `echo "$CODING_STANDARDS_DIR"`). It is required: if the variable is unset, or the directory it names does not contain `standards-tree.yaml`, stop and escalate to the user with that exact finding. Coding tasks must not be attempted without standards to reference, and the location must never be guessed.
 
 ## Tree structure
 

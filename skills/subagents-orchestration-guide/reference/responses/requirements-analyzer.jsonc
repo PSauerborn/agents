@@ -3,34 +3,20 @@
 // Completed shape:
 {
   "status": "completed",
-  // the type of task being requested, determined from provided context and codebase
   "taskType": "feature|fix|refactor|performance|security",
-  "purpose": "Essential purpose of request (1-2 sentences)",
-  "scale": "small|medium|large", // per the scale criteria in the agent definition
-  "confidence": "confirmed|provisional", // confidence in the scale determination
-  // impact on the frontend UI, per the criteria in the agent definition;
-  // "significant" triggers the orchestrator's frontend design gate
-  "uiImpact": "significant|minor|none",
-  "affectedFiles": ["path/to/file1", "path/to/file2"], // files affected by the change
-  "fileCount": 3, // file count is the most important criterion for scale determination
-  "technicalConsiderations": {
-    "constraints": ["list"],
-    "risks": ["list"], // requirements-stage risks only; the risk register belongs to risk-analyzer
-    "dependencies": ["list"]
-  },
-  // questions that affect the scope and scale of the work
-  "scopeDependencies": [
-    {
-      "question": "specific question that affects scale",
-      "impact": { "if_yes": "large", "if_no": "medium" }
-    }
-  ],
-  // general questions requiring confirmation before proceeding
+  "purpose": "Essential purpose of the request (1-2 sentences)",
+  "small": false, // true only for a localized change to at most 2 files; routes the request to the quick path
+  "uiImpact": "significant|minor|none", // "significant" triggers the orchestrator's frontend design gate
+  "affectedFiles": ["path/to/file1", "path/to/file2"], // files the change will modify or create (the write set)
+  "investigationTargets": ["path/to/caller.py (calls processOrder)"], // files that must be read to make the change safely, with hints (the read set)
+  "constraints": ["list"], // technical constraints that bound the approach
+  // Open questions the user must answer before planning. Empty when the request is unambiguous.
   "questions": [
     {
-      "category": "boundary|existing_code|dependencies",
       "question": "specific question",
-      "options": ["A", "B", "C"]
+      "whyItMatters": "one sentence on what changes depending on the answer",
+      "options": ["A", "B"], // 2-4 options; the first is the recommended one
+      "affectsRouting": false // true when the answer changes whether the change is small
     }
   ]
 }

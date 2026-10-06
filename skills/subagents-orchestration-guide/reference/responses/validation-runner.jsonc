@@ -1,26 +1,27 @@
 // Response schema for the `validation-runner` subagent.
 // Envelope and final-message contract: see the agent-response-protocol skill.
+// Reviewer shape: every reviewer returns findings[], remediationRequired, remediationTaskPath.
 // Completed shape:
 {
   "status": "completed",
+  "verdict": "verified|partial|failed", // verified: every discovered check ran and passed; partial: changeset checks pass but some checks could not be run or unrelated pre-existing failures remain; failed: a check attributable to the changeset failed
   "checksRun": [
     {
-      "type": "build|test|lint|format|typecheck",
+      "type": "build|test|lint|format|typecheck|acceptance",
       "command": "string", // exact command executed
-      "passed": true,
-      "summary": "string" // one-line result summary (e.g. "142 passed, 0 failed")
+      "result": "passed|failed|not-run",
+      "summary": "string" // one-line result (e.g. "142 passed, 0 failed"; for not-run, the reason)
     }
   ],
-  "allPassed": false, // true only if every discovered check was run and passed
-  "failures": [
+  "findings": [
     {
       "command": "string", // the failing command
-      "outputExcerpt": "string", // relevant excerpt of the failure output (failing test/target names)
-      "suspectedFiles": ["string"] // manifest files correlated with the failure
+      "evidence": "string", // relevant excerpt of the failure output (failing test/target names)
+      "suspectedFiles": ["string"] // changeset files correlated with the failure
     }
   ],
-  "remediationRequired": true, // true if any check failed
-  "remediationTaskPath": "docs/plans/tasks/{workPlanId}/TASK-VALIDATION-REMEDIATION.md" // null if allPassed
+  "remediationRequired": true, // true when verdict is failed
+  "remediationTaskPath": "{planDir}/tasks/TASK-VALIDATION-REMEDIATION.md" // null when remediationRequired is false
 }
 // Blocked shape:
 // {

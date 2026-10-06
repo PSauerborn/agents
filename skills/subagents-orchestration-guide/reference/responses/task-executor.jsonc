@@ -3,9 +3,9 @@
 // Completed shape:
 {
   "status": "completed",
-  "taskName": "[Exact name of executed task]",
-  "changeSummary": "[Specific summary of implementation content/changes]",
-  "filesModified": ["specific/file/path1", "specific/file/path2"], // consumed by the orchestrator to update the execution manifest
+  "taskId": "TASK-001", // from the task file
+  "changeSummary": "string", // specific summary of what was implemented
+  "filesModified": ["specific/file/path1"], // consumed by the orchestrator to update the execution manifest
   "testsAdded": ["created/test/file/path"] // consumed by the orchestrator to update the execution manifest
 }
 // Blocked shape (reasons):
@@ -15,6 +15,6 @@
 // {
 //   "status": "blocked",
 //   "reason": "investigation_target_not_found|out_of_scope_file|incomplete_task",
-//   "taskName": "[Exact name of attempted task]",
+//   "taskId": "TASK-001",
 //   "detail": "What is missing or out of scope, and what would unblock the task"
 // }

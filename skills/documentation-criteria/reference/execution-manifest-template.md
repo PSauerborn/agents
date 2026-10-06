@@ -1,9 +1,9 @@
-# Execution Manifest: WP-[0-9]{3}
+# Execution Manifest
 
-Work Plan ID: WP-[0-9]{3}
+Plan Directory: [docs/plans/WP-NNN or docs/plans/quick/...]
 Last Updated: YYYY-MM-DD HH:MM
 
-Maintained by the orchestrator: append a row to Task Results after each `task-executor` completion (from the executor's JSON response) and keep the Changeset section deduplicated. Downstream reviewers and the documenter treat this file as the definitive changeset for the work plan — they do not re-derive it from task files.
+Maintained by the orchestrator: append a row to Task Results after each `task-executor` completion (from the executor's JSON response) and keep the Changeset section deduplicated. Reviewers treat this file as the definitive changeset — they do not re-derive it from task files or `git status`.
 
 ## Task Results
 

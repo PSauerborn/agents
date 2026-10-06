@@ -2,7 +2,7 @@
   "name": "subagents-dev",
   "displayName": "Subagents Dev",
   "version": "1.0.0",
-  "description": "A reusable team of specialist subagents, skills, and orchestration procedures that turn a plain-language spec into implemented, quality-checked, risk-reviewed code.",
+  "description": "A team of specialist subagents and two orchestration skills \u2014 implement-spec for a spec you wrote, implement-request for a plain-language request of any size \u2014 that turn a request into a validated, reviewed changeset.",
   "author": {
     "name": "Pascal Sauerborn",
     "email": "pascal.sauerborn@gmail.com",
