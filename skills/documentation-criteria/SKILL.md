@@ -1,54 +1,47 @@
 ---
 name: documentation-criteria
-description: Documents formats, templates, and locations for output artifacts, including design, planning and task documents. Use when writing output artifacts for design, planning, and task documents.
+description: Defines the canonical location and template for every pipeline artifact — specs, spec reviews, designs, work plans, manifests, and task files. Use when writing or locating any of these.
 ---
 
-Implementation work produces design documents, work plans, task documents, and review artifacts. When writing any of these, follow the directory structure, templates, and conventions below.
+Every pipeline artifact has exactly one canonical location and one template. Agents write to these locations without being told a path; orchestrators locate artifacts from them without being told a path.
 
-## Docs Directory Structure
-
-Outputs should be organized in a clear and consistent directory structure within the `docs/` directory. Use the following structure when writing output files:
+## Layout
 
 ```text
 docs/
-├── specs/                                     # Feature specs (created by init-spec, passed to agents as specPath)
-│   └── SPEC-{ID}.md
-├── plans/                                     # Work Plans
-│   ├── {YYYY-MM-DD}-{workPlanId}.md
-│   ├── tasks/{workPlanId}/                    # decomposed task files
-│   │   ├── TASK-{number}.md
-│   │   ├── TASK-VALIDATION-REMEDIATION.md     # Validation remediation task (only if checks fail)
-│   │   ├── TASK-QC-REMEDIATION.md             # QC remediation task (only if violations found)
-│   │   ├── TASK-CODE-REVIEW-REMEDIATION.md    # Code review remediation task (only if findings)
-│   │   ├── TASK-SEC-REMEDIATION.md            # Security remediation task (only if findings)
-│   │   └── TASK-RISK-REMEDIATION.md           # Risk remediation task (only if risks found)
-│   ├── designs/{designSetId}/                 # Frontend design options (3 per set)
-│   │   ├── {designSetId}-option-{n}.md        # design option document, n = 1..3
-│   │   └── {designSetId}-option-{n}.html      # self-contained static HTML mockup
-│   ├── manifests/                             # Execution manifests (assembled by orchestrator)
-│   │   └── {workPlanId}-manifest.md
-│   ├── quality/{workPlanId}/                  # Quality Reports
-│   │   └── {workPlanId}-quality-report.md
-│   ├── changesets/{workPlanId}/               # Diffs and change reports
-│   │   └── {workPlanId}-changeset.md
-│   └── risk/{workPlanId}/                     # Risk Plans and Risk Reviews
-│       ├── {workPlanId}-risk-plan.md
-│       └── {workPlanId}-risk-review.md
-└── project-context/
-    └── external-resources.md     # referenced by task-executor for external resources
+├── specs/
+│   ├── SPEC-{ID}.md                        # spec, one or more features (init-spec, or spec-writer from a request); read-only once approved
+│   └── SPEC-{ID}-REVIEW.md                 # spec review + clarifications (review-spec)
+├── designs/{designSetId}/                  # frontend design options (frontend-designer); DES-NNN
+│   ├── {designSetId}-option-{n}.md         # n = 1..3
+│   └── {designSetId}-option-{n}.html       # self-contained static mockup
+└── plans/
+    ├── {workPlanId}/                       # one directory per work plan; WP-NNN
+    │   ├── work-plan.md                    # work-planner
+    │   ├── manifest.md                     # orchestrator (execution manifest)
+    │   └── tasks/
+    │       ├── TASK-{NNN}.md               # task-decomposer
+    │       ├── TASK-VALIDATION-REMEDIATION.md   # validation-runner, on failure
+    │       ├── TASK-CODE-REVIEW-REMEDIATION.md  # code-reviewer, on findings
+    │       ├── TASK-SEC-REMEDIATION.md          # security-reviewer, on findings
+    │       └── TASK-ACCEPTANCE-REMEDIATION.md   # acceptance-validator, on not_met
+    └── quick/{YYYY-MM-DD}-{slug}/          # small change, quick path (implement-request)
+        ├── manifest.md
+        └── tasks/
+            ├── TASK-001.md
+            └── TASK-VALIDATION-REMEDIATION.md
 ```
 
-## Available Templates
+A **plan directory** (`planDir`) is any `docs/plans/{workPlanId}/` or `docs/plans/quick/{...}/` directory. Every reviewer takes `planDir` as input, reads `{planDir}/manifest.md`, and writes its remediation task to `{planDir}/tasks/`. Designs live outside the plan directory because they are produced and selected before a work plan exists; the work plan cites the chosen design path.
 
-Use templates to ensure consistency and quality in your documentation. Below are the available templates for different types of documents:
+Directories are created on first write. Do not create placeholder files.
 
-| Document Type | When to Use | Template File |
-| --------------- | ---------------- | ---------------- |
-| Work Plan | When planning a new piece of work; authored by `work-planner` before decomposition | `${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/reference/work-plan-template.md` |
-| Task Executable File | When decomposing a work plan into single-commit tasks; authored by `task-decomposer` and consumed by `task-executor`. Also used for all remediation tasks | `${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/reference/task-template.md` |
-| Design Option | When proposing frontend design alternatives for a spec with significant UI changes; authored by `frontend-designer` (3 options per design set) | `${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/reference/design-option-template.md` |
-| Execution Manifest | Maintained by the orchestrator during execution; the definitive changeset consumed by all reviewers and the documenter | `${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/reference/execution-manifest-template.md` |
-| Quality Report | When reporting coding-standards review findings; authored by `quality-controller` after execution | `${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/reference/quality-report-template.md` |
-| Risk Plan | When identifying and documenting risks for a work plan; authored by `risk-analyzer` | `${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/reference/risk-plan-template.md` |
-| Risk Review | When reviewing a changeset against a risk plan; authored by `risk-reviewer` | `${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/reference/risk-review-template.md` |
-| Changeset | When summarizing the changeset after code changes; authored by `documenter` (one per work plan, excludes brand-new files) | `${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/reference/changeset-template.md` |
+## Templates
+
+| Artifact | Author | Template |
+| --- | --- | --- |
+| Spec | user (via `init-spec`) | `${CLAUDE_PLUGIN_ROOT}/skills/init-spec/reference/spec-template.md` |
+| Design option | `frontend-designer` | `${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/reference/design-option-template.md` |
+| Work plan | `work-planner` | `${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/reference/work-plan-template.md` |
+| Execution manifest | orchestrator | `${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/reference/execution-manifest-template.md` |
+| Task file (including every remediation task and quick-path task) | `task-decomposer`, reviewers, `implement-request` | `${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/reference/task-template.md` |

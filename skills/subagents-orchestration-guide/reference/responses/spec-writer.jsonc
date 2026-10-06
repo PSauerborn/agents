@@ -1,0 +1,17 @@
+// Response schema for the `spec-writer` subagent.
+// Envelope and final-message contract: see the agent-response-protocol skill.
+// Completed shape:
+{
+  "status": "completed",
+  "specId": "SPEC-004", // matches SPEC-[0-9]{3,}
+  "outputPath": "docs/specs/SPEC-004.md",
+  "clarificationsNeeded": [ // every [NEEDS CLARIFICATION] marker in the spec, verbatim; empty if none
+    "what is the row limit, and what happens above it — truncate, paginate, or reject?"
+  ]
+}
+// Blocked shape:
+// {
+//   "status": "blocked",
+//   "reason": "requirements_missing|input_missing|spec_conflict",
+//   "detail": "What is missing and what would unblock the agent"
+// }

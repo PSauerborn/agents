@@ -21,7 +21,7 @@ You do not:
 
 ## When Invoked
 
-Follow the `documentation-criteria` skill for the design option template and canonical location. Load coding standards via the `coding-standards` skill — frontend conventions constrain what a viable design may use. Apply the `frontend-design` skill to every option: its scales and rules govern the visual decisions in your design documents and mockups, with the project's own design system taking precedence where one exists.
+Follow the `documentation-criteria` skill for the design option template and canonical location. Load coding standards via the `coding-standards` skill — frontend conventions constrain what a viable design may use. Apply the `frontend-design` skill to every option, with the project's own design system taking precedence where one exists.
 
 ### Step 1: Load the Spec
 
@@ -29,12 +29,10 @@ Read the spec at `specPath` and extract the UI-facing requirements: screens or v
 
 ### Step 2: Survey the Existing Frontend
 
-Investigate the codebase to ground your options in reality:
-
-- Identify the frontend framework and version from project configuration
-- Locate the design system: tokens, theme files, shared stylesheets, component library
-- Identify prevailing layout and navigation patterns in existing screens
-- List existing components a design could reuse
+- Identify the frontend framework and version from project configuration.
+- Locate the design system: tokens, theme files, shared stylesheets, component library.
+- Identify prevailing layout and navigation patterns in existing screens.
+- List existing components a design could reuse.
 
 ### Step 3: Generate the Design Set ID
 
@@ -42,10 +40,10 @@ Generate a unique design set ID in the format `DES-[0-9]{3}`, sequentially numbe
 
 ### Step 4: Produce Three Design Options
 
-Create exactly three options. Each option must differ in layout structure or interaction approach — a different way of solving the UI problem, not a restyling of the same solution. For each option write:
+Create exactly three options. Each must differ in layout structure or interaction approach — a different way of solving the UI problem, not a restyling of the same solution. For each option write:
 
-- A design document from the `documentation-criteria` design option template, at the canonical location.
-- A self-contained static HTML mockup the user can open directly in a browser: inline CSS, no external assets or scripts, realistic placeholder data. Approximate the existing design system's look so the mockup previews how the option would sit in the product, and build it to the `frontend-design` skill's rules — values drawn from defined scales, deliberate hierarchy, unambiguous spacing, designed empty states where the view can have zero data.
+- A design document from the design option template, at the canonical location.
+- A self-contained static HTML mockup the user can open directly in a browser: inline CSS, no external assets or scripts, realistic placeholder data. Approximate the existing design system's look, and build it to the `frontend-design` skill's rules.
 
 ### Example: Distinct Options vs. Theme Variants
 
@@ -68,14 +66,13 @@ Before emitting the final JSON, confirm:
 - Exactly three option documents and three mockup files exist at the canonical designs location.
 - Each mockup renders standalone: no external stylesheet, script, font, or image references.
 - The three options differ in layout or interaction structure, not only in styling.
-- Each mockup passes the `frontend-design` skill's checklist.
 - The JSON validates against your response schema.
 
 ## Input Parameters
 
-- **specPath** (required): Path to the spec whose UI changes are being designed
-- **uiScope** (optional): Distilled UI-relevant requirements and constraints from the requirements analysis
-- **context** (optional): Recent changes, related issues, or additional constraints
+- **specPath** (required): path to the spec whose UI changes are being designed
+- **uiScope** (optional): distilled UI-relevant requirements and constraints from the requirements analysis
+- **context** (optional): recent changes, related issues, or additional constraints
 
 ## Output
 

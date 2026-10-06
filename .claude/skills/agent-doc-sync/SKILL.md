@@ -1,20 +1,15 @@
 ---
 name: agent-doc-sync
-description: Analyze available subagents and document inputs and outputs in orchestration guide.
+description: Keep the orchestration guide's Subagent Inputs table and the response schemas in sync with the agent definitions in agents/.
 disable-model-invocation: true
 ---
 
-The `subagents-orchestration-guide` skill located at @skills/subagents-orchestration-guide documents available subagents, how to use them, and their inputs and outputs. Analyze the available agents and update the following:
+Agents are listed in exactly two places besides their own definition files: the **Subagent Inputs** table in `skills/subagents-orchestration-guide/SKILL.md`, and the response schemas in `skills/subagents-orchestration-guide/reference/responses/{agent-name}.jsonc`. The README's agent table is a third, human-facing copy.
 
-* Available subagents table. Add any new subagents and remove any that are no longer available.
-* Subagent input parameters. Update the table with any new or changed input parameters for each subagent.
-* Agent response structure. Each agent has a unique response signature documented in `skills/subagents-orchestration-guide/reference/responses/{agent-name}.jsonc`. Update the schema if the agent's response structure has changed. Add a schema file for any new agents. Make sure the mapping table in the `Subagent Responses` section is updated to include any new/updated agents and their schema locations.
+Read every file in `agents/` and reconcile:
 
-Make sure you only update the following entities:
+- **Subagent Inputs table**: one row per agent, matching each agent's Input Parameters section exactly (names, required/optional, defaults). Add rows for new agents; remove rows for deleted ones.
+- **Response schemas**: one file per agent. The schema must match the agent's Output section and blocked reasons. Every reviewer schema keeps the uniform fields `findings[]`, `remediationRequired`, `remediationTaskPath`.
+- **README agent table**: one line per agent, matching the agent's description.
 
-* Available subagents table
-* Subagent input parameters table
-* Subagent response structure table
-* Subagent response schema files in `skills/subagents-orchestration-guide/reference/responses/`
-
-Escalate to the user if you are unsure about any changes or if you need clarification on the subagent's behavior or response structure.
+Change nothing else. Escalate to the user if an agent's inputs or outputs are ambiguous.

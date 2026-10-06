@@ -1,39 +1,34 @@
-# Work Plan: [Feature Name] Implementation
+# Work Plan: [Spec Title]
 
 Work Plan ID: WP-[0-9]{3}
 Created Date: YYYY-MM-DD
 Type: feature|fix|refactor
-Spec: [path to spec document this plan implements]
-Scale: Small|Medium|Large
-Description: [Headline summary of work plan]
-Estimated Impact: X files
+Spec: [path to the spec this plan implements]
+Spec Review: [path to SPEC-*-REVIEW.md, if one exists — its Clarifications section is binding]
+Design: [path to the selected design option document, or None]
 
 ## Objective
 
-[Why this change is necessary, what problem it solves]
-
-## Background
-
-[Current state and why changes are needed]
+[Why this change is necessary and what it must achieve — two or three sentences.]
 
 ## Design-to-Plan Traceability
 
 Every acceptance criterion in the spec appears exactly once — both mapped scenarios
-and Additional Acceptance Criteria (spec section 5.1). A requirement may span
-multiple rows; requirements with no criteria are omitted. `acceptance-validator`
-verifies the implemented changeset against this table.
+and Additional Acceptance Criteria (spec section 5.1). `task-decomposer` verifies
+every row is covered by a task; `acceptance-validator` verifies the changeset
+against this table.
 
 | Criterion ID | Requirement | Acceptance Criterion (from spec) | Satisfied By |
 | --- | --- | --- | --- |
-| AC-1 | REQ-2 | [mapped scenario name, e.g. "Creating a user with a duplicate username is rejected"] | Task 2, Task 3 |
-| AC-2 | REQ-1 | [additional criterion, e.g. "User creation completes within 200ms at p95"] | Task 2 |
+| AC-1 | REQ-2 | [mapped scenario name] | Task 2, Task 3 |
+| AC-2 | REQ-1 | [additional criterion] | Task 2 |
 
 ## Implementation Phases
 
-### Phase 1: [Value Unit 1 Name] (Estimated tasks: X)
+### Phase 1: [Value Unit Name] (Estimated tasks: X)
 
-**Purpose**: [First vertical slice — proves approach works]
-**Verification**: [From Verification Strategy: early verification point]
+**Purpose**: [First vertical slice — proves the approach works]
+**Verification**: [The check that demonstrates this phase is complete]
 
 #### Tasks
 
@@ -46,20 +41,7 @@ detail (that belongs to `task-decomposer`):
 
 #### Phase Completion Criteria
 
-- [ ] [Functional criteria only — e.g. "early verification point passed"]
-
-### Phase 2: [Value Unit 2 Name] (Estimated tasks: X)
-
-**Purpose**: [Subsequent value unit]
-**Verification**: [From Verification Strategy]
-
-#### Tasks
-
-- Task 3: [Coverage description. Depends on: Task 2]
-
-#### Phase Completion Criteria
-
-- [ ] [Functional criteria]
+- [ ] [Functional criterion only]
 
 ## Verification Strategy
 
@@ -69,30 +51,21 @@ completion criteria. Whole-changeset validation runs in the pipeline review stag
 
 ## Failure Modes
 
-[Known failure modes and edge cases the implementation must handle — checklist form.]
+[Known failure modes, edge cases, and technical risks the implementation must
+handle, each with the concrete mitigation the code must contain — checklist form.]
 
-- [ ] [e.g. duplicate username on concurrent requests]
+- [ ] [e.g. duplicate username on concurrent requests → unique constraint, loser gets 409]
 
 ## Reference Contracts
 
 [Contract values downstream agents need: API shapes, status codes, schemas, enum
 values, integration points and their contracts.]
 
-## Review Scope
-
-[Focus areas for reviewers and scope boundaries — files or behaviors expected to
-remain unchanged, and why.]
-
 ## Completion Criteria
 
 - [ ] All phases completed
 - [ ] Every acceptance criterion in the traceability table satisfied
-- [ ] Necessary documentation updated
+- [ ] Documentation task completed, if the spec changes setup, usage, configuration, or a public API
 
-Full-suite validation, coding standards, correctness, and security checks are
-performed by the pipeline review stage (`validation-runner`, `quality-controller`,
-`code-reviewer`, `security-reviewer`) — do not restate them as plan tasks.
-
-## Notes
-
-[Special notes, reference information, important points, etc.]
+Full-suite validation, correctness, standards, and security checks are performed
+by the pipeline review stage — do not restate them as plan tasks.

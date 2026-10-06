@@ -3,8 +3,9 @@
 // Completed shape:
 {
   "status": "completed",
-  "workPlanId": "string", // Unique identifier for the work plan, matching the regex WP-[0-9]{3}
-  "planOutputPath": "string" // Path to the generated work plan document (docs/plans/YYYY-MM-DD-{workPlanId}.md)
+  "workPlanId": "WP-001", // matches WP-[0-9]{3}
+  "planDir": "docs/plans/WP-001", // the plan directory; passed to every downstream agent
+  "outputPath": "docs/plans/WP-001/work-plan.md" // the work plan document
 }
 // Blocked shape:
 // {

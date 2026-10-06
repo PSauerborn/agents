@@ -1,17 +1,20 @@
 // Response schema for the `acceptance-validator` subagent.
 // Envelope and final-message contract: see the agent-response-protocol skill.
+// Reviewer shape: every reviewer returns findings[], remediationRequired, remediationTaskPath.
 // Completed shape:
 {
   "status": "completed",
-  "allCriteriaMet": false, // true only if every criterion has verdict "met"
-  "criteria": [
+  "findings": [ // one entry per acceptance criterion in the spec, including those that are met
     {
-      "criterion": "string", // the acceptance criterion, quoted or closely paraphrased from the spec
+      "criterionId": "AC-1",
       "verdict": "met|not_met|unverifiable",
       "evidence": "string", // file:line and/or test executed with its result; empty only for unverifiable
-      "gap": "string" // for not_met: what is absent or wrong; for unverifiable: what clarification is needed
+      "gap": "string" // not_met: what is absent or wrong; unverifiable: what clarification is needed; null for met
     }
-  ]
+  ],
+  "remediationRequired": true, // true if any criterion is not_met
+  "remediationTaskPath": "{planDir}/tasks/TASK-ACCEPTANCE-REMEDIATION.md", // null when remediationRequired is false
+  "escalationRequired": false // true if any criterion is unverifiable — the orchestrator must ask the user, not remediate
 }
 // Blocked shape:
 // {
