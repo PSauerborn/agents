@@ -100,7 +100,7 @@ docs/plans/quick/YYYY-MM-DD-slug/manifest.md, tasks/
 | Agent | Responsibility |
 | --- | --- |
 | `requirements-analyzer` | Assess task type, whether the change is small, UI impact, write set, read set, and open questions |
-| `spec-writer` | Draft a spec from a plain-language request, marking every unknown for clarification |
+| `spec-writer` | Draft a spec from a plain-language request, cut to its MVP, marking every unknown for clarification |
 | `frontend-designer` | Produce 3 distinct design options (doc + HTML mockup) for significant UI changes |
 | `work-planner` | Convert a spec, its review, and the requirements summary into a work plan |
 | `task-decomposer` | Split the work plan into single-commit task files; verify criterion coverage |
