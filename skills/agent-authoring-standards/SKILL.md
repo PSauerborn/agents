@@ -19,7 +19,7 @@ Agent definition files are system prompts. Every line costs context before the a
   | `inherit` | Everything else — analysis, design, decomposition, review | requirements-analyzer, frontend-designer, task-decomposer, code-reviewer, security-reviewer, acceptance-validator |
 
 - **effort** — `high` for the agents whose output gates the rest of the run (requirements-analyzer, spec-writer, work-planner, frontend-designer); `medium` for every other agent.
-- **skills** — preload only what the agent uses on every run. All pipeline agents preload `agent-response-protocol`; every agent that writes an artifact preloads `documentation-criteria`.
+- **skills** — preload only what the agent uses on every run. All pipeline agents preload `agent-response-protocol`; every agent that writes an artifact preloads `documentation-criteria`; every reviewer that works from `git diff` preloads `review-changeset`.
 
 ## Body
 

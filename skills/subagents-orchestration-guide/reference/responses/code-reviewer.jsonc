@@ -22,6 +22,6 @@
 // Blocked shape:
 // {
 //   "status": "blocked",
-//   "reason": "manifest_not_found|spec_not_found|standards_unreadable",
+//   "reason": "manifest_not_found|manifest_incomplete|spec_not_found|standards_unreadable",
 //   "detail": "What is missing and what would unblock the agent"
 // }

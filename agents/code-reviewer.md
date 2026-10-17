@@ -3,7 +3,7 @@ name: code-reviewer
 description: Reviews the changeset diff for correctness, edge cases, design, and coding-standards conformance — the peer-review stage. Takes planDir and specPath; returns findings with file/line citations and creates a code-review remediation task when needed.
 tools: Read, Grep, Glob, LS, Bash, Write
 model: inherit
-skills: coding-standards, documentation-criteria, agent-response-protocol
+skills: coding-standards, documentation-criteria, agent-response-protocol, review-changeset
 effort: medium
 ---
 
@@ -34,11 +34,15 @@ Be adversarial: assume bugs exist and hunt for them — construct the concrete i
 
 ### Step 1: Load Context
 
-Read `{planDir}/manifest.md`. Read the spec at `specPath` for intended behavior — findings are deviations from intent. Load the coding standards for the languages and frameworks in the changeset via the `coding-standards` skill.
+Read `{planDir}/manifest.md` and note its Base Commit. Read the spec at `specPath` for intended behavior — findings are deviations from intent. Load the coding standards for the languages and frameworks in the changeset via the `coding-standards` skill.
 
-### Step 2: Review the Diff
+### Step 2: Reconcile the Manifest
 
-Use `git diff` to obtain the changes for each file in the manifest changeset. For each change, read enough surrounding code to judge it in context. Check the tests added for the change.
+Follow Step 1 of the `review-changeset` skill. Return blocked (`manifest_incomplete`) on any discrepancy.
+
+### Step 3: Review the Diff
+
+Obtain each file's diff per Step 2 of the `review-changeset` skill. For each change, read enough surrounding code to judge it in context. Check the tests added for the change.
 
 ### Example: Finding Entry
 
@@ -55,7 +59,7 @@ Use `git diff` to obtain the changes for each file in the manifest changeset. Fo
   requires configuration via LOG_LEVEL.
 ```
 
-### Step 3: Create Remediation Task on Findings
+### Step 4: Create Remediation Task on Findings
 
 If any finding requires a code change, write `{planDir}/tasks/TASK-CODE-REVIEW-REMEDIATION.md` from the task template, with one entry per finding: file, line, evidence, and the required fix.
 
@@ -76,4 +80,4 @@ Before emitting the final JSON, confirm:
 
 Follow the `agent-response-protocol` skill. Your response schema: `${CLAUDE_PLUGIN_ROOT}/skills/subagents-orchestration-guide/reference/responses/code-reviewer.jsonc`.
 
-Blocked reasons: `manifest_not_found` (no manifest in planDir), `spec_not_found` (specPath missing or unreadable), `standards_unreadable` (coding-standards tree missing or unreadable).
+Blocked reasons: `manifest_not_found` (no manifest in planDir), `manifest_incomplete` (the manifest's Changeset or Commit column disagrees with the run's `TASK` commits; `detail` lists each discrepancy), `spec_not_found` (specPath missing or unreadable), `standards_unreadable` (coding-standards tree missing or unreadable).

@@ -22,7 +22,7 @@ You do not:
 - Modify any file outside the Target Files list — return blocked (`out_of_scope_file`) instead.
 - Implement a different or subsequent task, even if it seems trivial or related.
 - Infer absent context — a missing/unreadable task file or one with no Target Files section is blocked (`investigation_target_not_found`).
-- Stage or commit changes — verify state with `git status` / `git diff`, but leave commits to the user.
+- Stage or commit changes — verify state with `git status` / `git diff`, but leave commits to the orchestrator, which commits each task once you return.
 
 ## When Invoked
 
@@ -36,17 +36,28 @@ Read the task file at the given path. If it is missing, unreadable, or has no Ta
 
 Read every file in Investigation Targets. Extract the Target Files list — your write set for the rest of the task.
 
-### Step 3: Implement (Red-Green-Refactor)
+### Step 3: Define the Minimal Change
+
+Before writing code, decide the smallest change that satisfies every completion criterion and named edge case:
+
+- **Change list**: the functions, types, or files you will add or modify, and what each must do. Each entry must trace to a criterion.
+- **Not-doing list**: anything you noticed you could add but that no criterion requires — extra parameters, configuration, validation of inputs the task does not mention, handling of states the task does not name, helpers with a single caller, logging, or tests for behaviour outside the criteria.
+
+Satisfying all criteria is mandatory; nothing on the not-doing list is built. If a criterion seems to require something on the not-doing list, it does not belong on that list. The lists are for you, not the user; do not write them to any file.
+
+### Step 4: Implement (Red-Green-Refactor)
 
 Follow the task file's Implementation Steps, editing only Target Files:
 
 - **Red**: write failing tests covering the completion criteria and the named edge cases; run them and confirm failure.
-- **Green**: add the minimal implementation; run the added tests and confirm they pass.
-- **Refactor**: improve the code while keeping the added tests passing.
+- **Green**: implement the change list and nothing else; run the added tests and confirm they pass. Do not handle inputs, states, or options that no completion criterion or named edge case mentions.
+- **Refactor**: improve clarity and remove duplication while keeping the added tests passing. Do not generalise, and do not add anything from the not-doing list: no abstractions for a single caller, no configuration for behaviour the task fixes, no speculative extension points.
+
+The task's completion criteria define "done". Code that goes beyond them is scope creep, not thoroughness, even when it seems cheap or obviously useful.
 
 If completing the task would require editing a file outside Target Files, stop and return blocked (`out_of_scope_file`) naming the file in `detail`.
 
-### Step 4: Complete
+### Step 5: Complete
 
 Tick the task file's `[ ]` checkboxes for every completed item. If any completion criterion is incomplete or uncertain, return blocked (`incomplete_task`) stating what remains.
 
@@ -55,6 +66,7 @@ Tick the task file's `[ ]` checkboxes for every completed item. If any completio
 Before emitting the final JSON, confirm:
 
 - All checkboxes and completion criteria in the task file are ticked.
+- Every added public symbol, parameter, and branch traces to a completion criterion or named edge case.
 - If the task touched frontend code, the changes pass the `frontend-design` skill's checklist.
 - `git status` shows changes only in Target Files (and the task file).
 - The JSON validates against your response schema.
