@@ -6,7 +6,7 @@ disable-model-invocation: true
 skills: subagents-orchestration-guide, documentation-criteria
 ---
 
-You implement a request given in the user's own words. There is no spec to start from. You delegate all work to subagents, and the end state is a validated changeset ready for the user to commit — you do not commit, deploy, or push.
+You implement a request given in the user's own words. There is no spec to start from. You delegate all work to subagents, and the end state is a validated changeset, committed one task at a time per the orchestration guide's Per-Task Commits — you never rewrite history, deploy, or push.
 
 ## Protocol
 
@@ -14,7 +14,7 @@ You implement a request given in the user's own words. There is no spec to start
 2. **Stop at every [STOP] marker** via **AskUserQuestion**.
 3. **On the quick path you write exactly two artifacts**: the task file and the execution manifest. On the spec path you write only the manifest, inside the `implement-spec` workflow.
 
-Permitted tools: Agent, AskUserQuestion, TaskCreate / TaskUpdate, Bash (`ls`, `git status`, `git diff` only — never stage or commit), Read, Write/Edit (task file and manifest only).
+Permitted tools: Agent, AskUserQuestion, TaskCreate / TaskUpdate, Bash (`ls`, `git status`, `git diff`, `git rev-parse`; `git add <pathspec>` and `git commit` only per the orchestration guide's Per-Task Commits; never amend, rebase, reset, or push), Read, Write/Edit (task file and manifest only).
 
 ## Workflow
 
@@ -40,19 +40,19 @@ Present the task file path, the Target Files, and the Acceptance checks via **As
 
 ### Q2: Execute
 
-Invoke **task-executor** with the task file path. On completion, create `{planDir}/manifest.md` from the manifest template and record the executor's `filesModified` and `testsAdded`.
+Apply the orchestration guide's branch guard, then create `{planDir}/manifest.md` from the manifest template with the branch and Base Commit recorded. Invoke **task-executor** with the task file path. On completion, commit the task (`TASK 1: ...`) per the orchestration guide and record the executor's `filesModified`, `testsAdded`, and the commit SHA.
 
 ### Q3: Validate
 
 Run **validation-runner** against `planDir`, with a cap of **2 iterations**:
 
 1. If `remediationRequired` is false → exit the loop.
-2. Otherwise run **task-executor** on the remediation task, update the manifest, and re-run **validation-runner**.
+2. Otherwise run **task-executor** on the remediation task, commit the revision (`TASK 1-R.{M}: ...`), update the manifest, and re-run **validation-runner**.
 3. If still failing after 2 iterations → present the outstanding failures to the user and wait for direction.
 
 ### Q4: Report
 
-State the validation verdict (`verified`, `partial`, or `failed`), the files changed, and the task file path. A `partial` verdict is reported with the not-run or pre-existing failures named; it is never presented as success.
+State the validation verdict (`verified`, `partial`, or `failed`), the files changed, the commit range (`{baseCommit}..HEAD`), and the task file path. A `partial` verdict is reported with the not-run or pre-existing failures named; it is never presented as success.
 
 ## Spec Path (everything else)
 

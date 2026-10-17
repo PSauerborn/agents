@@ -46,6 +46,16 @@ Write `docs/specs/SPEC-{ID}.md` from the template. Fill every section:
 
 Mark every gap inline as `[NEEDS CLARIFICATION: <the specific question>]` — a missing status code, an undefined limit, an ambiguous boundary. A marked gap is better than a plausible guess that becomes a requirement.
 
+### Example: Outcome vs. Implementation Detail
+
+```md
+<!-- BAD: the requirement prescribes how to build it; that is the planner's decision -->
+- **REQ-3**: A `/users` router group MUST be registered via `gin.RouterGroup("/users")` in the `addRouters` function in `main.go`.
+
+<!-- GOOD: the requirement states the outcome and leaves the how to the planner -->
+- **REQ-3**: The API MUST expose the user endpoints under the `/users` route prefix.
+```
+
 ### Example: Marked Gap vs. Invented Requirement
 
 ```md
