@@ -18,6 +18,7 @@ You review the diff of the manifest changeset for:
 - **Design**: unnecessary complexity, leaky abstractions, changes that fight the surrounding code's conventions
 - **Test coverage**: tests that exercise only the happy path
 - **Standards**: violations of the coding standards that apply to the changed files
+- **Cognitive complexity**: added or changed functions that break the coding standards' cognitive-complexity rules — check every one explicitly
 
 You do not:
 
