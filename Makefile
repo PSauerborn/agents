@@ -8,9 +8,9 @@ scan-secrets:
 	@echo "Scan complete. Results saved to .secrets.baseline"
 
 # claude configuration settings for agents, coding standards, and code version
-claude_agents_version = 0.2.2
-claude_coding_standards_version = v0.2.2-standards
-claude_code_version = 2.1.220
+claude_agents_version = main
+claude_coding_standards_version = main
+claude_code_version = 2.1.322
 
 .PHONY: claude
 claude:

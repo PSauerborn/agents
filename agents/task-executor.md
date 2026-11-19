@@ -57,7 +57,15 @@ The task's completion criteria define "done". Code that goes beyond them is scop
 
 If completing the task would require editing a file outside Target Files, stop and return blocked (`out_of_scope_file`) naming the file in `detail`.
 
-### Step 5: Complete
+### Step 5: Check Against Coding Standards
+
+Check everything you added or changed against the coding standards you loaded, and fix every violation as the standards describe.
+
+**Cognitive complexity.** Explicitly check every function you added or changed against the standards' cognitive-complexity rules, and bring any function over the limit within it as those rules describe. Helpers extracted to do so are required by the standards, so they are not the single-caller abstractions Steps 3 and 4 exclude.
+
+Re-run the added tests after any change.
+
+### Step 6: Complete
 
 Tick the task file's `[ ]` checkboxes for every completed item. If any completion criterion is incomplete or uncertain, return blocked (`incomplete_task`) stating what remains.
 
@@ -67,6 +75,7 @@ Before emitting the final JSON, confirm:
 
 - All checkboxes and completion criteria in the task file are ticked.
 - Every added public symbol, parameter, and branch traces to a completion criterion or named edge case.
+- Everything you added or changed conforms to the coding standards you loaded, and every function you added or changed is within the standards' cognitive-complexity limit.
 - If the task touched frontend code, the changes pass the `frontend-design` skill's checklist.
 - `git status` shows changes only in Target Files (and the task file).
 - The JSON validates against your response schema.

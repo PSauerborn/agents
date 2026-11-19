@@ -75,6 +75,7 @@ For remediation without a testable behavior change (lint, format, build fixes), 
 
 - [ ] [Task-specific behavioral criterion, e.g. "POST /users/new returns 409 for duplicate username"]
 - [ ] All added tests pass
+- [ ] All added or changed code conforms to the applicable coding standards
 - [ ] (Remediation tasks only) Verification command from Remediation Context passes
 
 ## Scope Boundary
