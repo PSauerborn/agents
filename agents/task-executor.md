@@ -30,7 +30,7 @@ Load coding standards via the `coding-standards` skill before making changes. Do
 
 ### Step 1: Read the Task File
 
-Read the task file at the given path. If it is missing, unreadable, or has no Target Files section, return blocked (`investigation_target_not_found`). If it has a Change Request section, its Acceptance entries are your completion criteria.
+Read the task file at the given path. If it is missing, unreadable, or has no Target Files section, return blocked (`investigation_target_not_found`).
 
 ### Step 2: Investigate
 

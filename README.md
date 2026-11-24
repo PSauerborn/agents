@@ -4,8 +4,8 @@ A reusable set of [Claude Code](https://claude.com/claude-code) agent definition
 
 Two entry points share the same agents:
 
-- **`/implement-request <request>`** — start from your own words. A small change (one or two files) runs as a single task file with full-suite validation. Anything larger gets a drafted spec for you to approve, then runs the full workflow. This is the spec-kit style path: you never have to write the spec yourself.
-- **`/implement-spec <spec-path>`** — start from a spec you wrote with `/init-spec`. Review and clarify, analyse, optionally design, plan, decompose, execute, review, validate acceptance.
+- **`/draft-spec <request>`** — start from your own words. A spec is drafted from your request for you to approve, then its acceptance criteria are drafted with you one scenario at a time, updating the existing acceptance suite where the spec changes behaviour. It stops there; nothing is implemented. This is the spec-kit style path: you never have to write the spec yourself.
+- **`/implement-spec <spec-path>`** — start from a spec drafted with `/draft-spec` or written with `/init-spec`. Review and clarify, analyse, optionally design, plan, decompose, execute, review, validate acceptance.
 
 Orchestrators never edit code and never commit — subagents implement, and committing is left to you. Each subagent owns one responsibility, carries only the context its role requires, and returns a structured JSON response (`completed` or `blocked` with a typed reason). Shared skills define the conventions — orchestration rules, canonical artifact locations, coding standards, the approval protocol — so every run is repeatable.
 
@@ -27,10 +27,9 @@ cp -r agents skills /path/to/your-project/.claude/
 Set `CODING_STANDARDS_DIR` to your standards repository — the `coding-standards` skill requires it. Then:
 
 ```text
-/implement-request fix the off-by-one in paginate()      # small: one task, no spec
-/implement-request add CSV export to the orders page     # larger: drafts a spec, you approve, full flow
-/init-spec <feature description>                         # or scaffold a spec yourself ...
-/implement-spec docs/specs/SPEC-NNN.md                   # ... and run it
+/draft-spec add CSV export to the orders page            # drafts a spec + acceptance criteria with you, then stops
+/init-spec <feature description>                         # or scaffold a spec yourself
+/implement-spec docs/specs/SPEC-NNN.md                   # run either kind of spec
 ```
 
 (Namespaced as `/subagents-dev:<skill>` when installed as a plugin.) `/review-spec <spec-path>` runs the review and clarification gate on its own.
@@ -40,10 +39,9 @@ Set `CODING_STANDARDS_DIR` to your standards repository — the `coding-standard
 ```mermaid
 flowchart TD
     REQUEST([request]) --> ANALYZE["requirements-analyzer<br/>files · UI impact · questions"]
-    ANALYZE -->|"small"| QTASK["task file"] --> QAPPROVE["task approval"] --> QEXEC["task-executor"] --> QVAL["validation-runner"] --> DONE
-    ANALYZE -->|"not small"| WRITE["spec-writer<br/>draft spec, gaps marked"] --> SAPPROVE["spec approval"] --> GATE
+    ANALYZE --> WRITE["spec-writer<br/>draft spec, gaps marked"] --> SAPPROVE["spec approval"] --> ACS["draft-spec-ac<br/>acceptance criteria, one at a time"] --> SPEC
 
-    SPEC([spec you wrote]) --> GATE["review-spec<br/>review + clarifications"]
+    SPEC([spec]) --> GATE["review-spec<br/>review + clarifications"]
     GATE --> REQ["requirements-analyzer"]
     REQ -.->|"significant UI"| DESIGN["frontend-designer<br/>3 options"] --> SELECT["design selection"] -.-> PLAN
     REQ --> PLAN["work-planner"]
@@ -66,13 +64,13 @@ flowchart TD
 
     classDef stop fill:#fde4e4,stroke:#d64545,color:#10203f
     classDef terminal fill:#e6f6ec,stroke:#2f9e5e,color:#0f3a22
-    class GATE,APPROVE,SELECT,ESCALATE,QAPPROVE,SAPPROVE stop
+    class GATE,APPROVE,SELECT,ESCALATE,SAPPROVE,ACS stop
     class SPEC,DONE,REQUEST terminal
 ```
 
 Red = `[STOP]` checkpoints where the orchestrator waits for you · dashed = conditional.
 
-There is one flow, not three. The only routing decision is whether a request is **small** (a localized change to at most two files): small requests skip the spec, plan, and review stages; everything else runs every stage, whether the spec was written by you or drafted from your request.
+There is one flow. `/draft-spec` covers the top row and ends with the spec and its acceptance criteria written; `/implement-spec` picks up from any spec, drafted or written by you, and runs every stage.
 
 Key mechanics:
 
@@ -92,14 +90,13 @@ Everything lives under `docs/` in the target repo:
 docs/specs/SPEC-NNN.md, SPEC-NNN-REVIEW.md
 docs/designs/DES-NNN/
 docs/plans/WP-NNN/work-plan.md, manifest.md, tasks/
-docs/plans/quick/YYYY-MM-DD-slug/manifest.md, tasks/
 ```
 
 ## Agents
 
 | Agent | Responsibility |
 | --- | --- |
-| `requirements-analyzer` | Assess task type, whether the change is small, UI impact, write set, read set, and open questions |
+| `requirements-analyzer` | Assess task type, UI impact, write set, read set, and open questions |
 | `spec-writer` | Draft a spec from a plain-language request, cut to its MVP, marking every unknown for clarification |
 | `frontend-designer` | Produce 3 distinct design options (doc + HTML mockup) for significant UI changes |
 | `work-planner` | Convert a spec, its review, and the requirements summary into a work plan |

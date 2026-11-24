@@ -1,6 +1,6 @@
 # Execution Manifest
 
-Plan Directory: [docs/plans/WP-NNN or docs/plans/quick/...]
+Plan Directory: [docs/plans/WP-NNN]
 Branch: [branch name at execution start]
 Base Commit: [full SHA of HEAD before the first task ran — reviewers reconcile against and diff from this ref]
 Last Updated: YYYY-MM-DD HH:MM

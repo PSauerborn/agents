@@ -5,7 +5,6 @@
   "status": "completed",
   "taskType": "feature|fix|refactor|performance|security",
   "purpose": "Essential purpose of the request (1-2 sentences)",
-  "small": false, // true only for a localized change to at most 2 files; routes the request to the quick path
   "uiImpact": "significant|minor|none", // "significant" triggers the orchestrator's frontend design gate
   "affectedFiles": ["path/to/file1", "path/to/file2"], // files the change will modify or create (the write set)
   "investigationTargets": ["path/to/caller.py (calls processOrder)"], // files that must be read to make the change safely, with hints (the read set)
@@ -15,8 +14,7 @@
     {
       "question": "specific question",
       "whyItMatters": "one sentence on what changes depending on the answer",
-      "options": ["A", "B"], // 2-4 options; the first is the recommended one
-      "affectsRouting": false // true when the answer changes whether the change is small
+      "options": ["A", "B"] // 2-4 options; the first is the recommended one
     }
   ]
 }

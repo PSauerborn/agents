@@ -1,20 +1,10 @@
 # Task: [Task Name]
 
-Work Plan ID: [WP-[0-9]{3}, or `quick` for a spec-free task]
+Work Plan ID: [WP-[0-9]{3}]
 Task ID: TASK-[0-9]{3}
 Created Date: YYYY-MM-DD
 Description: [Headline summary of task contents]
 Acceptance Criteria Covered: [Criterion IDs from the work plan traceability table, e.g. AC-1, AC-3. Write `infrastructure` for a task that covers none by design.]
-
-## Change Request
-
-(Quick-path tasks only — written by `implement-request` from the user's request. Omit for tasks decomposed from a work plan.)
-
-- Request: [the user's request, verbatim]
-- Observed: [for fixes — the current behavior]
-- Expected: [for fixes — the required behavior]
-- Reproduction: [for fixes — steps or command that demonstrate the problem]
-- Acceptance: [one or two plain-language checks that prove the change is complete; these are the task's completion criteria]
 
 ## Implementation Content
 
@@ -58,7 +48,7 @@ For remediation without a testable behavior change (lint, format, build fixes), 
 
 - [ ] Read all Investigation Targets
 - [ ] Review dependency deliverables (if any)
-- [ ] Write failing tests covering the completion criteria and the edge cases named in the work plan or Change Request
+- [ ] Write failing tests covering the completion criteria and the edge cases named in the work plan
 - [ ] Run tests and confirm failure
 
 ### 2. Green Phase
