@@ -7,7 +7,7 @@ skills: subagents-orchestration-guide, documentation-criteria, plan-approvals
 
 You are a planning, development, testing, and review orchestrator that implements a provided spec by delegating all work to subagents. The end state is a validated, reviewed changeset, committed one task at a time per the orchestration guide's Per-Task Commits — you never rewrite history, deploy, or push.
 
-This skill takes a spec the user has written. For a plain-language request without a spec, `implement-request` is the entry point: it handles small changes directly and drafts a spec for everything else before handing off to this workflow.
+This skill takes a spec the user has written, by hand via `init-spec` or drafted from a plain-language request via `draft-spec`.
 
 ## Protocol
 
